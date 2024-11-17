@@ -8,7 +8,7 @@
 #include <sys/types.h>
 
 int crea_jerarquia();
-void espera(int,char *,int);
+void espera();
 
 int main() {
     crea_jerarquia();
@@ -16,6 +16,7 @@ int main() {
 }
 
 int crea_jerarquia() {
+    pid_t pid;
     switch(fork()) { // Proceso 38
         case -1:
             perror("main:proceso38:fork");
@@ -76,24 +77,38 @@ int crea_jerarquia() {
                                                                                     return 9;
                                                                                     break;
                                                                                 case 0:
-                                                                                    espera(0,"proceso 58",0);
+                                                                                    pid=getpid();
+                                                                                    fprintf(stdout, "Soy el proceso 58(pid=%d)\n", pid);
+                                                                                    espera();
                                                                             }
-                                                                            espera(1, "proceso 57", 1);
+                                                                            pid=getpid();
+                                                                            fprintf(stdout, "Soy el proceso 57(pid=%d)\n", pid);
+                                                                            espera();
                                                                             break;
                                                                     }
-                                                                    espera(1, "proceso 56", 1);
+                                                                    pid=getpid();
+                                                                    fprintf(stdout, "Soy el proceso 56(pid=%d)\n", pid);
+                                                                    espera();
                                                                     break;
                                                             }
-                                                            espera(1, "proceso 54", 1);
+                                                            pid=getpid();
+                                                            fprintf(stdout, "Soy el proceso 54(pid=%d)\n", pid);
+                                                            espera();
                                                             break;
                                                     }
-                                                    espera(1, "proceso 50", 1);
+                                                    pid=getpid();
+                                                    fprintf(stdout, "Soy el proceso 50(pid=%d)\n", pid);
+                                                    espera();
                                                     break;
                                             }
-                                            espera(1, "proceso 46", 1);
+                                            pid=getpid();
+                                            fprintf(stdout, "Soy el proceso 46(pid=%d)\n", pid);
+                                            espera();
                                             break;
                                     }
-                                    espera(1, "proceso 42", 1);
+                                    pid=getpid();
+                                    fprintf(stdout, "Soy el proceso 42(pid=%d)\n", pid);
+                                    espera();
                                     break;
                             }
                             switch (fork()) { // Proceso 43
@@ -114,16 +129,24 @@ int crea_jerarquia() {
                                                     return 9;
                                                     break;
                                                 case 0:
-                                                    espera(0, "proceso 51", 0);
+                                                    pid=getpid();
+                                                    fprintf(stdout, "Soy el proceso 51(pid=%d)\n", pid);
+                                                    espera();
                                                     break;
                                             }
-                                            espera(1, "proceso 47", 1);
+                                            pid=getpid();
+                                            fprintf(stdout, "Soy el proceso 47(pid=%d)\n", pid);
+                                            espera();
                                             break;
                                     }
-                                    espera(1, "proceso 43", 1);
+                                    pid=getpid();
+                                    fprintf(stdout, "Soy el proceso 43(pid=%d)\n", pid);
+                                    espera();
                                     break;
                             }
-                            espera(2, "proceso 40", 1);
+                            pid=getpid();
+                            fprintf(stdout, "Soy el proceso 40(pid=%d)\n", pid);
+                            espera();
                             break;
                     }
                     switch (fork()) { // Proceso 41
@@ -156,16 +179,24 @@ int crea_jerarquia() {
                                                             return 9;
                                                             break;
                                                         case 0:
-                                                            espera(0, "proceso 55", 0);
+                                                            pid=getpid();
+                                                            fprintf(stdout, "Soy el proceso 55(pid=%d)\n", pid);
+                                                            espera();
                                                             break;
                                                     }
-                                                    espera(1, "proceso 52", 1);
+                                                    pid=getpid();
+                                                    fprintf(stdout, "Soy el proceso 52(pid=%d)\n", pid);
+                                                    espera();
                                                     break;
                                             }
-                                            espera(1, "proceso 48", 1);
+                                            pid=getpid();
+                                            fprintf(stdout, "Soy el proceso 48(pid=%d)\n", pid);
+                                            espera();
                                             break;
                                     }
-                                    espera(1, "proceso 44", 1);
+                                    pid=getpid();
+                                    fprintf(stdout, "Soy el proceso 44(pid=%d)\n", pid);
+                                    espera();
                                     break;
                             }
                             switch (fork()) { // Proceso 45
@@ -186,54 +217,57 @@ int crea_jerarquia() {
                                                     return 9;
                                                     break;
                                                 case 0:
-                                                    espera(0, "proceso 53", 0);
+                                                    pid=getpid();
+                                                    fprintf(stdout, "Soy el proceso 53(pid=%d)\n", pid);
+                                                    espera();
                                                     break;
                                             }
-                                            espera(1, "proceso 49", 1);
+                                            pid=getpid();
+                                            fprintf(stdout, "Soy el proceso 49(pid=%d)\n", pid);
+                                            espera();
                                             break;
                                     }
-                                    espera(1, "proceso 45", 1);
+                                    pid=getpid();
+                                    fprintf(stdout, "Soy el proceso 45(pid=%d)\n", pid);
+                                    espera();
                                     break;
                             }
-                            espera(2, "proceso 41", 1);
+                            pid=getpid();
+                            fprintf(stdout, "Soy el proceso 41(pid=%d)\n", pid);
+                            espera();
                             break;
                     }
-                    espera(2, "proceso 39", 1);
+                    pid=getpid();
+                    fprintf(stdout, "Soy el proceso 39(pid=%d)\n", pid);
+                    espera();
                     break;
             }
-            espera(1, "proceso 38", 1);
+            pid=getpid();
+            fprintf(stdout, "Soy el proceso 38(pid=%d)\n", pid);
+            espera();
             break;
         default:
-            system("ps -f | sort");
-            printf("Proceso 37 padre\n");
+            pid=getpid();
+            if(pid==-1) {
+                perror("main:getpid");
+                exit(1);
+            }
+            fprintf(stdout, "Soy el proceso 37(pid=%d)\n", pid);
+            system("pstree | grep 'main'");
             break;
     }
     return 0;
 }
 
-void espera (int i,char *parentesco,int dormir) {
-   int pid, retorno, j;
+void espera() {
+    pid_t pid;
 
-    if(dormir) {
-        sleep(5);
-    }
+    sleep(40);
 
     pid=getpid();
     if(pid==-1) {
         perror("main:getpid");
         exit(1);
     }
-
-    for(j=0; j<i; j++) {
-        if(wait(&retorno)==-1) {
-            perror("main:wait");
-            exit(1);
-        }
-        if(!WIFEXITED(retorno)) {
-            perror("main:WIFEXITED");
-            exit(0);
-        }
-    }
-    printf("Soy el %s(pid=%d)\n", parentesco, pid);
     exit(0);
 }
