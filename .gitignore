@@ -1,0 +1,8 @@
+# Ignore binary file
+main
+
+# Ignore object file
+main.o
+
+# Ignore VSCode folder
+.vscode/
