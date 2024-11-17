@@ -6,12 +6,13 @@ TARGET = main
 # Compilador
 CC = gcc
 
-# Regla por defecto
-all: $(TARGET)
 
 # Regla para compilar el ejecutable
-$(TARGET): main.c
-	$(CC) -o $(TARGET) main.c
+main: main.o
+	$(CC) main.o -o main
+
+main.o: main.c
+	$(CC) -c main.c
 
 # Regla para limpiar los archivos generados
 clean:

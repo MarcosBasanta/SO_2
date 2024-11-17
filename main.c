@@ -1,75 +1,236 @@
+#define _HPUX_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <sys/wait.h>
+#include <sys/types.h>
 
-void create_process(int num) {
-    pid_t pid = fork();
-    switch (pid) {
-        case 0:
-            // Proceso hijo
-            printf("Proceso %d creado\n", num);
-            exit(0);
-            break;
-        case -1:
-            // Error al crear el proceso
-            perror("fork");
-            exit(1);
-            break;
-        default:
-            // Proceso padre
-            waitpid(pid, NULL, 0); // Espera a que el proceso hijo termine
-            break;
-    }
-}
-
-void create_hierarchy() {
-    create_process(37);
-    if (fork() == 0) {
-        create_process(38);
-        if (fork() == 0) {
-            create_process(39);
-            if (fork() == 0) {
-                create_process(40);
-                if (fork() == 0) {
-                    create_process(42);
-                    if (fork() == 0) {
-                        create_process(46);
-                        create_process(50);
-                        create_process(54);
-                        create_process(56);
-                        create_process(57);
-                        create_process(58);
-                    }
-                } else {
-                    create_process(43);
-                    if (fork() == 0) {
-                        create_process(47);
-                        create_process(51);
-                    }
-                }
-            } else {
-                create_process(41);
-                if (fork() == 0) {
-                    create_process(44);
-                    if (fork() == 0) {
-                        create_process(48);
-                        create_process(52);
-                        create_process(55);
-                    }
-                } else {
-                    create_process(45);
-                    if (fork() == 0) {
-                        create_process(49);
-                        create_process(53);
-                    }
-                }
-            }
-        }
-    }
-}
+int crea_jerarquia();
+void espera(int,char *,int);
 
 int main() {
-    create_hierarchy();
+    crea_jerarquia();
     return 0;
+}
+
+int crea_jerarquia() {
+    switch(fork()) { // Proceso 38
+        case -1:
+            perror("main:proceso38:fork");
+            return 2;
+            break;
+        case 0:
+            switch (fork()) { // Proceso 39
+                case -1:
+                    perror("main:proceso39:fork");
+                    return 3;
+                    break;
+                case 0:
+                    switch(fork()) { // Proceso 40
+                        case -1:
+                            perror("main:proceso40:fork");
+                            return 4;
+                            break;
+                        case 0:
+                            switch (fork()) { // Proceso 42
+                                case -1:
+                                    perror("main:proceso42:fork");
+                                    return 6;
+                                    break;
+                                case 0:
+                                    switch (fork()) { // Proceso 46
+                                        case -1:
+                                            perror("main:proceso46:fork");
+                                            return 8;
+                                            break;
+                                        case 0:
+                                            switch (fork()) { // Proceso 50
+                                                case -1:
+                                                    perror("main:proceso50:fork");
+                                                    return 9;
+                                                    break;
+                                                case 0:
+                                                    switch (fork()) { // Proceso 54
+                                                        case -1:
+                                                            perror("main:proceso54:fork");
+                                                            return 9;
+                                                            break;
+                                                        case 0:
+                                                            switch (fork()) { // Proceso 56
+                                                                case -1:
+                                                                    perror("main:proceso56:fork");
+                                                                    return 9;
+                                                                    break;
+                                                                case 0:
+                                                                    switch (fork()) { // Proceso 57
+                                                                        case -1:
+                                                                            perror("main:proceso57:fork");
+                                                                            return 9;
+                                                                            break;
+                                                                        case 0:
+                                                                            switch (fork()) { // Proceso 58
+                                                                                case -1:
+                                                                                    perror("main:proceso58:fork");
+                                                                                    return 9;
+                                                                                    break;
+                                                                                case 0:
+                                                                                    espera(0,"proceso 58",0);
+                                                                            }
+                                                                            espera(1, "proceso 57", 1);
+                                                                            break;
+                                                                    }
+                                                                    espera(1, "proceso 56", 1);
+                                                                    break;
+                                                            }
+                                                            espera(1, "proceso 54", 1);
+                                                            break;
+                                                    }
+                                                    espera(1, "proceso 50", 1);
+                                                    break;
+                                            }
+                                            espera(1, "proceso 46", 1);
+                                            break;
+                                    }
+                                    espera(1, "proceso 42", 1);
+                                    break;
+                            }
+                            switch (fork()) { // Proceso 43
+                                case -1:
+                                    perror("main:proceso43:fork");
+                                    return 7;
+                                    break;
+                                case 0:
+                                    switch (fork()) { // Proceso 47
+                                        case -1:
+                                            perror("main:proceso47:fork");
+                                            return 8;
+                                            break;
+                                        case 0:
+                                            switch (fork()) { // Proceso 51
+                                                case -1:
+                                                    perror("main:proceso51:fork");
+                                                    return 9;
+                                                    break;
+                                                case 0:
+                                                    espera(0, "proceso 51", 0);
+                                                    break;
+                                            }
+                                            espera(1, "proceso 47", 1);
+                                            break;
+                                    }
+                                    espera(1, "proceso 43", 1);
+                                    break;
+                            }
+                            espera(2, "proceso 40", 1);
+                            break;
+                    }
+                    switch (fork()) { // Proceso 41
+                        case -1:
+                            perror("main:proceso41:fork");
+                            return 5;
+                            break;
+                        case 0:
+                            switch (fork()) { // Proceso 44
+                                case -1:
+                                    perror("main:proceso44:fork");
+                                    return 6;
+                                    break;
+                                case 0:
+                                    switch (fork()) { // Proceso 48
+                                        case -1:
+                                            perror("main:proceso48:fork");
+                                            return 8;
+                                            break;
+                                        case 0:
+                                            switch (fork()) { // Proceso 52
+                                                case -1:
+                                                    perror("main:proceso52:fork");
+                                                    return 9;
+                                                    break;
+                                                case 0:
+                                                    switch (fork()) { // Proceso 55
+                                                        case -1:
+                                                            perror("main:proceso55:fork");
+                                                            return 9;
+                                                            break;
+                                                        case 0:
+                                                            espera(0, "proceso 55", 0);
+                                                            break;
+                                                    }
+                                                    espera(1, "proceso 52", 1);
+                                                    break;
+                                            }
+                                            espera(1, "proceso 48", 1);
+                                            break;
+                                    }
+                                    espera(1, "proceso 44", 1);
+                                    break;
+                            }
+                            switch (fork()) { // Proceso 45
+                                case -1:
+                                    perror("main:proceso45:fork");
+                                    return 7;
+                                    break;
+                                case 0:
+                                    switch (fork()) { // Proceso 49
+                                        case -1:
+                                            perror("main:proceso49:fork");
+                                            return 8;
+                                            break;
+                                        case 0:
+                                            switch (fork()) { // Proceso 53
+                                                case -1:
+                                                    perror("main:proceso53:fork");
+                                                    return 9;
+                                                    break;
+                                                case 0:
+                                                    espera(0, "proceso 53", 0);
+                                                    break;
+                                            }
+                                            espera(1, "proceso 49", 1);
+                                            break;
+                                    }
+                                    espera(1, "proceso 45", 1);
+                                    break;
+                            }
+                            espera(2, "proceso 41", 1);
+                            break;
+                    }
+                    break;
+            }
+            break;
+        default:
+            printf("Proceso 37 padre\n");
+            break;
+    }
+    return 0;
+}
+
+void espera (int i,char *parentesco,int dormir) {
+   int pid, retorno, retorno2, j;
+
+    if(dormir) {
+        sleep(5);
+    }
+
+    pid=getpid();
+    if(pid==-1) {
+        perror("main:getpid");
+        exit(1);
+    }
+
+    for(j=0; j<i; j++) {
+        if(wait(&retorno2)==-1) {
+            perror("main:wait");
+            exit(1);
+        }
+        if(!WIFEXITED(retorno2)) {
+            perror("main:WIFEXITED");
+            exit(0);
+        }
+    }
+    printf("Soy el %s(pid=%d)\n", parentesco, pid);
+    exit(0);
 }
