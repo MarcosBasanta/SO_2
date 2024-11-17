@@ -198,8 +198,10 @@ int crea_jerarquia() {
                             espera(2, "proceso 41", 1);
                             break;
                     }
+                    espera(2, "proceso 39", 1);
                     break;
             }
+            espera(1, "proceso 38", 1);
             break;
         default:
             printf("Proceso 37 padre\n");
@@ -209,7 +211,7 @@ int crea_jerarquia() {
 }
 
 void espera (int i,char *parentesco,int dormir) {
-   int pid, retorno, retorno2, j;
+   int pid, retorno, j;
 
     if(dormir) {
         sleep(5);
@@ -222,11 +224,11 @@ void espera (int i,char *parentesco,int dormir) {
     }
 
     for(j=0; j<i; j++) {
-        if(wait(&retorno2)==-1) {
+        if(wait(&retorno)==-1) {
             perror("main:wait");
             exit(1);
         }
-        if(!WIFEXITED(retorno2)) {
+        if(!WIFEXITED(retorno)) {
             perror("main:WIFEXITED");
             exit(0);
         }
