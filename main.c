@@ -204,6 +204,7 @@ int crea_jerarquia() {
             espera(1, "proceso 38", 1);
             break;
         default:
+            system("ps -f | sort");
             printf("Proceso 37 padre\n");
             break;
     }
