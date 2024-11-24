@@ -4,5 +4,8 @@ main
 # Ignore object file
 main.o
 
+# Ignore pids file
+pids.txt
+
 # Ignore VSCode folder
 .vscode/

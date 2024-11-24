@@ -7,6 +7,7 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <fcntl.h>
+#include <sys/file.h>
 
 #define PID_FILE "pids.txt"
 #define NUM_PROCESOS 7
@@ -18,7 +19,8 @@ void manejador(int sig);
 void escribir_pid(pid_t pid, int index);
 pid_t leer_pid(int index);
 
-
+// Casi acabado el trabajo esta, se envia la señal, con los caminos que estan en  el arbol, bueno eso creo, hay que comprobarlo
+// Instrucciones de uso en el README
 // Falta usar un archivo proyectado en memoria para guardar los pids
 // Falta comprobar si de verdad se hace bien
 // Falta comprobar funcionamiento en encina
@@ -43,6 +45,13 @@ int main() {
     system("pstree | grep 'main'");
     pause();
     waitpid(pidHijo, NULL, 0);
+
+    // Borrar el archivo de PIDs al finalizar
+    if (remove(PID_FILE) == 0) {
+        printf("Archivo de PIDs eliminado correctamente.\n");
+    } else {
+        perror("Error al eliminar el archivo de PIDs");
+    }
     return 0;
 }
 
