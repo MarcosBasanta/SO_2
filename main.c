@@ -8,16 +8,24 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <sys/file.h>
+#include <sys/mman.h>
 
 #define PID_FILE "pids.txt"
 #define NUM_PROCESOS 7
-#define PID_SIZE 12
+#define PID_SIZE sizeof(pid_t)
+
+pid_t pidPrincipal;
+
+int file;
+pid_t *pids;
 
 int crea_jerarquia();
 void configurar_manejador();
 void manejador(int sig);
 void escribir_pid(pid_t pid, int index);
 pid_t leer_pid(int index);
+void proyectar_archivo();
+void desproyectar_archivo();
 
 // Casi acabado el trabajo esta, se envia la señal, con los caminos que estan en  el arbol, bueno eso creo, hay que comprobarlo
 // Instrucciones de uso en el README
@@ -29,29 +37,33 @@ pid_t leer_pid(int index);
 int main() {
     int i;
     pid_t pidHijo;
-    FILE *file = fopen(PID_FILE, "w");
+
+    pidPrincipal = getpid();
 
     configurar_manejador();
-
-    // Limpiar el archivo de PIDs al inicio
-    if (file == NULL) {
-        perror("Error al abrir el archivo de PIDs");
-        exit(EXIT_FAILURE);
-    }
-    fclose(file);
+    proyectar_archivo();
 
     pidHijo = crea_jerarquia();
 
     system("pstree | grep 'main'");
     pause();
-    waitpid(pidHijo, NULL, 0);
 
+    if (getpid() == pidPrincipal) {
+        fprintf(stdout, "Proceso %d envía señal SIGTERM a %d\n", pidPrincipal, pidHijo);
+        // Enviar señal SIGTERM al hijo
+        kill(pidHijo, SIGTERM);
+        // Esperar a que el hijo termine
+        waitpid(pidHijo, NULL, 0);
+    }
+
+    desproyectar_archivo();
     // Borrar el archivo de PIDs al finalizar
     if (remove(PID_FILE) == 0) {
         printf("Archivo de PIDs eliminado correctamente.\n");
     } else {
         perror("Error al eliminar el archivo de PIDs");
     }
+
     return 0;
 }
 
@@ -344,6 +356,9 @@ void manejador(int sig) {
     if (sig == SIGTERM) {
         pid_t pidYo, pidHijo;
         pidYo = getpid();
+        if (pidYo == pidPrincipal) {
+            return;
+        }
         if (pidYo == leer_pid(0)) { // Proceso 50
             exit(0); // Terminar el proceso
         } else if (pidYo == leer_pid(1)) { // Proceso 51
@@ -357,6 +372,7 @@ void manejador(int sig) {
         } else if (pidYo == leer_pid(5)) { // Proceso 55
             pidHijo = leer_pid(6); // Proceso 56
         } else {
+            fprintf(stdout, "Proceso %d envía señal SIGTERM a todos sus hijos\n", pidYo);
             // Enviar señal SIGTERM a todos los hijos
             kill(0, SIGTERM); // Enviar a todos los procesos en el mismo grupo de procesos
             // Esperar a que todos los hijos terminen
@@ -364,6 +380,7 @@ void manejador(int sig) {
             exit(0); // Terminar el proceso
         }
 
+        fprintf(stdout, "Proceso %d envía señal SIGTERM a %d\n", pidYo, pidHijo);
         // Enviar señal SIGTERM al hijo específico
         kill(pidHijo, SIGTERM);
 
@@ -375,68 +392,46 @@ void manejador(int sig) {
 }
 
 void escribir_pid(pid_t pid, int index) {
-    FILE *file = fopen(PID_FILE, "a");
-    if (file == NULL) {
-        perror("Error al abrir el archivo de PIDs");
-        exit(EXIT_FAILURE);
-    }
-
-    // Bloquear el archivo
-    if (flock(fileno(file), LOCK_EX) == -1) {
-        perror("Error al bloquear el archivo de PIDs");
-        fclose(file);
-        exit(EXIT_FAILURE);
-    }
-
-    // Escribir la posición y el PID
-    fprintf(file, "%d %d\n", index, pid);
-    fprintf(stdout, "Se escribió el PID %d en la posición %d\n", pid, index);
-
-    // Desbloquear el archivo
-    if (flock(fileno(file), LOCK_UN) == -1) {
-        perror("Error al desbloquear el archivo de PIDs");
-        fclose(file);
-        exit(EXIT_FAILURE);
-    }
-    fclose(file);
+    pids[index] = pid;
 }
 
 pid_t leer_pid(int index) {
-    FILE *file = fopen(PID_FILE, "r");
-    pid_t pid;
-    int pos;
+    return pids[index];
+}
 
-    if (file == NULL) {
-        perror("Error al abrir el archivo de PIDs");
-        exit(EXIT_FAILURE);
-    }
-    
-    // Bloquear el archivo
-    if (flock(fileno(file), LOCK_SH) == -1) { // LOCK_SH para bloqueo compartido
-        perror("Error al bloquear el archivo de PIDs");
-        fclose(file);
+void proyectar_archivo() {
+    file=open(PID_FILE, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+    if (file == -1) {
+        perror("Error al abrir el archivo");
         exit(EXIT_FAILURE);
     }
 
-    while (fscanf(file, "%d %d", &pos, &pid) == 2) {
-        if (pos == index) {
-            // Desbloquear el archivo
-            if (flock(fileno(file), LOCK_UN) == -1) {
-                perror("Error al desbloquear el archivo de PIDs");
-                fclose(file);
-                exit(EXIT_FAILURE);
-            }
-            fclose(file);
-            return pid;
-        }
-    }
-    // Desbloquear el archivo
-    if (flock(fileno(file), LOCK_UN) == -1) {
-        perror("Error al desbloquear el archivo de PIDs");
-        fclose(file);
+    // Desplazar el puntero del archivo para que entren 7 PIDs
+    if (lseek(file, NUM_PROCESOS * PID_SIZE - 1, SEEK_SET) == -1) {
+        perror("Error en lseek");
+        close(file);
         exit(EXIT_FAILURE);
     }
-    fclose(file);
-    fprintf(stderr, "Error: no se encontró el PID en la posición %d\n", index);
-    exit(EXIT_FAILURE);
+
+    // Escribir un byte vacío para extender el archivo
+    if (write(file, "", 1) != 1) {
+        perror("Error en write");
+        close(file);
+        exit(EXIT_FAILURE);
+    }
+
+    pids=(pid_t*) mmap(NULL, NUM_PROCESOS * PID_SIZE, PROT_WRITE, MAP_SHARED, file, 0);
+    if (pids == MAP_FAILED) {
+        perror("Error en mmap");
+        close(file);
+        exit(EXIT_FAILURE);
+    }
+}
+
+void desproyectar_archivo() {
+    // Desmapear la memoria y cerrar el archivo
+    if (munmap(pids, NUM_PROCESOS * PID_SIZE) == -1) {
+        perror("Error en munmap");
+    }
+    close(file);
 }
