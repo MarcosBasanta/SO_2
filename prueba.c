@@ -9,7 +9,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 
-#define NUM_PROCESOS 7
+#define NUM_PROCESOS 10
 #define SHM_NAME "/shm_pids"
 #define SHM_SIZE (NUM_PROCESOS * sizeof(pid_t))
 
@@ -74,58 +74,81 @@ pid_t crea_jerarquia() {
             perror("main:proceso38:fork");
             return 2;
         case 0:
+            pidYo = getppid();
+            escribir_pid(pidYo, 0);
+             pidYo = getpid();
             switch (pidHijo[0] = fork()) {
                 case -1:
                     perror("main:proceso39:fork");
                     return 3;
                 case 0:
+                    pidYo = getppid();
+                    escribir_pid(pidYo, 1);
+                     pidYo = getpid();
                     switch(pidHijo[0] = fork()) {
                         case -1:
                             perror("main:proceso40:fork");
                             return 4;
                         case 0:
+                            pidYo = getppid();
+                            escribir_pid(pidYo, 2);
+                             pidYo = getpid();
                             switch (pidHijo[0] = fork()) {
                                 case -1:
                                     perror("main:proceso42:fork");
                                     return 6;
                                 case 0:
+                                    pidYo = getppid();
+                                    escribir_pid(pidYo, 3);
+                                     pidYo = getpid();
                                     switch (pidHijo[0] = fork()) {
                                         case -1:
                                             perror("main:proceso46:fork");
                                             return 8;
                                         case 0:
+                                            pidYo = getppid();
+                                            escribir_pid(pidYo, 4);
+                                             pidYo = getpid();
                                             switch (pidHijo[0] = fork()) {
                                                 case -1:
                                                     perror("main:proceso50:fork");
                                                     return 9;
                                                 case 0:
-                                                    pidYo = getpid();
-                                                    escribir_pid(pidYo, 0);
+                                                    pidYo = getppid();
+                                                    escribir_pid(pidYo, 5);
+                                                     pidYo = getpid();
                                                     switch (pidHijo[0] = fork()) {
                                                         case -1:
                                                             perror("main:proceso54:fork");
                                                             return 9;
                                                         case 0:
-                                                            pidYo = getpid();
-                                                            escribir_pid(pidYo, 4);
+                                                            pidYo = getppid();
+                                                            escribir_pid(pidYo, 6);
+                                                             pidYo = getpid();
                                                             switch (pidHijo[0] = fork()) {
                                                                 case -1:
                                                                     perror("main:proceso56:fork");
                                                                     return 9;
                                                                 case 0:
-                                                                    pidYo = getpid();
-                                                                    escribir_pid(pidYo, 6);
+                                                                    pidYo = getppid();
+                                                                    escribir_pid(pidYo, 7);
+                                                                     pidYo = getpid();
                                                                     switch (pidHijo[0] = fork()) {
                                                                         case -1:
                                                                             perror("main:proceso57:fork");
                                                                             return 9;
                                                                         case 0:
+                                                                            pidYo = getppid();
+                                                                            escribir_pid(pidYo, 8);
+                                                                             pidYo = getpid();
                                                                             switch (pidHijo[0] = fork()) {
                                                                                 case -1:
                                                                                     perror("main:proceso58:fork");
                                                                                     return 9;
                                                                                 case 0:
-                                                                                    pidYo = getpid();
+                                                                                    pidYo = getppid();
+                                                                                    escribir_pid(pidYo, 9);
+                                                                                     pidYo = getpid();
                                                                                     fprintf(stdout, "Soy el proceso 58(pid=%d)\n", pidYo);
                                                                                     pause();
                                                                                     exit(0);
@@ -146,145 +169,26 @@ pid_t crea_jerarquia() {
                                                     fprintf(stdout, "Soy el proceso 50(pid=%d)\n", pidYo);
                                                     pause();
                                                     exit(0);
-                                        }
-                                        pidYo = getpid();
-                                        fprintf(stdout, "Soy el proceso 46(pid=%d)\n", pidYo);
-                                        pause();
-                                        exit(0);
-                                }
-                                pidYo = getpid();
-                                fprintf(stdout, "Soy el proceso 42(pid=%d)\n", pidYo);
-                                pause();
-                                exit(0);
-                        }
-                        switch (pidHijo[1] = fork()) {
-                            case -1:
-                                perror("main:proceso43:fork");
-                                return 7;
-                            case 0:
-                                switch (pidHijo[0] = fork()) {
-                                    case -1:
-                                        perror("main:proceso47:fork");
-                                        return 8;
-                                    case 0:
-                                        switch (pidHijo[0] = fork()) {
-                                            case -1:
-                                                perror("main:proceso51:fork");
-                                                return 9;
-                                            case 0:
-                                                pidYo = getpid();
-                                                escribir_pid(pidYo, 1);
-                                                fprintf(stdout, "Soy el proceso 51(pid=%d)\n", pidYo);
-                                                pause();
-                                                exit(0);
-                                        }
-                                        pidYo = getpid();
-                                        fprintf(stdout, "Soy el proceso 47(pid=%d)\n", pidYo);
-                                        pause();
-                                        exit(0);
-                                }
-                                pidYo = getpid();
-                                fprintf(stdout, "Soy el proceso 43(pid=%d)\n", pidYo);
-                                pause();
-                                exit(0);
-                        }
-                        pidYo = getpid();
-                        fprintf(stdout, "Soy el proceso 40(pid=%d)\n", pidYo);
-                        pause();
-                        exit(0);
-                }
-                switch (pidHijo[1] = fork()) {
-                    case -1:
-                        perror("main:proceso41:fork");
-                        return 5;
-                    case 0:
-                        switch (pidHijo[0] = fork()) {
-                            case -1:
-                                perror("main:proceso44:fork");
-                                return 6;
-                            case 0:
-                                switch (pidHijo[0] = fork()) {
-                                    case -1:
-                                        perror("main:proceso48:fork");
-                                        return 8;
-                                    case 0:
-                                        switch (pidHijo[0] = fork()) {
-                                            case -1:
-                                                perror("main:proceso52:fork");
-                                                return 9;
-                                            case 0:
-                                                pidYo = getpid();
-                                                escribir_pid(pidYo, 2);
-                                                switch (pidHijo[0] = fork()) {
-                                                    case -1:
-                                                        perror("main:proceso55:fork");
-                                                        return 9;
-                                                    case 0:
-                                                        pidYo = getpid();
-                                                        escribir_pid(pidYo, 5);
-                                                        fprintf(stdout, "Soy el proceso 55(pid=%d)\n", pidYo);
-                                                        pause();
-                                                        exit(0);
-                                                }
-                                                fprintf(stdout, "Soy el proceso 52(pid=%d)\n", pidYo);
-                                                pause();
-                                                exit(0);
-                                        }
-                                        pidYo = getpid();
-                                        fprintf(stdout, "Soy el proceso 48(pid=%d)\n", pidYo);
-                                        pause();
-                                        exit(0);
-                                }
-                                pidYo = getpid();
-                                fprintf(stdout, "Soy el proceso 44(pid=%d)\n", pidYo);
-                                pause();
-                                exit(0);
-                        }
-                        switch (pidHijo[1] = fork()) {
-                            case -1:
-                                perror("main:proceso45:fork");
-                                return 7;
-                            case 0:
-                                switch (pidHijo[0] = fork()) {
-                                    case -1:
-                                        perror("main:proceso49:fork");
-                                        return 8;
-                                    case 0:
-                                        switch (pidHijo[0] = fork()) {
-                                            case -1:
-                                                perror("main:proceso53:fork");
-                                                return 9;
-                                            case 0:
-                                                pidYo = getpid();
-                                                escribir_pid(pidYo, 3);
-                                                fprintf(stdout, "Soy el proceso 53(pid=%d)\n", pidYo);
-                                                pause();
-                                                exit(0);
-                                        }
-                                        pidYo = getpid();
-                                        fprintf(stdout, "Soy el proceso 49(pid=%d)\n", pidYo);
-                                        pause();
-                                        exit(0);
-                                }
-                                pidYo = getpid();
-                                fprintf(stdout, "Soy el proceso 45(pid=%d)\n", pidYo);
-                                pause();
-                                exit(0);
-                        }
-                        pidYo = getpid();
-                        fprintf(stdout, "Soy el proceso 41(pid=%d)\n", pidYo);
-                        pause();
-                        exit(0);
-                }
-                pidYo = getpid();
-                fprintf(stdout, "Soy el proceso 39(pid=%d)\n", pidYo);
-                pause();
-                exit(0);
-        }
-        pidYo = getpid();
-        fprintf(stdout, "Soy el proceso 38(pid=%d)\n", pidYo);
-        pause();
-        exit(0);
+                                            }
+                                            fprintf(stdout, "Soy el proceso 46(pid=%d)\n", pidYo);
+                                            pause();
+                                            exit(0);
+                                    }
+                                    fprintf(stdout, "Soy el proceso 42(pid=%d)\n", pidYo);
+                                    pause();
+                                    exit(0);
+                            }
+                            fprintf(stdout, "Soy el proceso 40(pid=%d)\n", pidYo);
+                            pause();
+                            exit(0);
+                    }
+                    fprintf(stdout, "Soy el proceso 39(pid=%d)\n", pidYo);
+                    pause();
+                    exit(0);
+            }
+            fprintf(stdout, "Soy el proceso 38(pid=%d)\n", pidYo);
+            pause();
+            exit(0);
     default:
         pidYo = getpid();
         fprintf(stdout, "Soy el proceso 37(pid=%d)\n", pidYo);
