@@ -9,22 +9,6 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 
-#define NUM_PROCESOS 10
-#define SHM_NAME "/shm_pids"
-#define SHM_SIZE (NUM_PROCESOS * sizeof(pid_t))
-
-int shm_fd;
-pid_t *shm_pids;#define _HPUX_SOURCE
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <signal.h>
-#include <sys/wait.h>
-#include <sys/types.h>
-#include <fcntl.h>
-#include <sys/mman.h>
-
 #define NUM_PROCESOS 22
 #define FILE_NAME "pids.dat"
 #define FILE_SIZE (NUM_PROCESOS * sizeof(pid_t))
@@ -340,34 +324,6 @@ int main() {
     eliminar_memoria_compartida();
 
     return 0;
-}
-
-void crear_memoria_compartida() {
-    shm_fd = shm_open(SHM_NAME, O_CREAT | O_RDWR, 0666);
-    if (shm_fd == -1) {
-        perror("Error al crear la memoria compartida");
-        exit(EXIT_FAILURE);
-    }
-    if (ftruncate(shm_fd, SHM_SIZE) == -1) {
-        perror("Error al ajustar el tamaño de la memoria compartida");
-        exit(EXIT_FAILURE);
-    }
-    shm_pids = mmap(0, SHM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
-    if (shm_pids == MAP_FAILED) {
-        perror("Error al mapear la memoria compartida");
-        exit(EXIT_FAILURE);
-    }
-}
-
-void eliminar_memoria_compartida() {
-    if (munmap(shm_pids, SHM_SIZE) == -1) {
-        perror("Error al desmapear la memoria compartida");
-    }
-    if (shm_unlink(SHM_NAME) == -1) {
-        perror("Error al eliminar la memoria compartida");
-    } else {
-        printf("Memoria compartida eliminada correctamente.\n");
-    }
 }
 
 pid_t crea_jerarquia() {

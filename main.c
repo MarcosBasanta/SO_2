@@ -10,9 +10,10 @@
 #include <sys/file.h>
 #include <sys/mman.h>
 
-#define PID_FILE "pids.bin"
+#define PID_FILE "pids.dat"
 #define NUM_PROCESOS 6
 #define PID_SIZE sizeof(pid_t)
+#define FILE_SIZE (NUM_PROCESOS * PID_SIZE)
 
 pid_t pidPrincipal;
 pid_t *pids;
@@ -37,15 +38,21 @@ void desproyectar_archivo(int file);
 int main() {
     int i, file;
     pidPrincipal = getpid();
-    configurar_manejador();
+
     proyectar_archivo(file);
+    configurar_manejador();
+
     crea_jerarquia();
 
     pause();
+
     if (getpid() == pidPrincipal) {
         kill(pidHijo[0], SIGTERM);
+
         waitpid(pidHijo[0], NULL, 0);
+
         desproyectar_archivo(file);
+
         exit(0);
     }
 
@@ -440,38 +447,25 @@ void escribir_pid(pid_t pid, int index) {
 }
 
 pid_t leer_pid(int index) {
-    pid_t pid;
-    pids[5] = 0;
-    pid = *(pids+index);
-    return pid;
+    return pids[index];
 }
 
 void proyectar_archivo(int file) {
-    FILE *fileTemp;
-    pid_t array[NUM_PROCESOS] = {0};
-
-    fileTemp = fopen(PID_FILE, "wb+");
-    if (fileTemp == NULL) {
-        perror("Error al abrir el archivo");
+    int fd = open(PID_FILE, O_CREAT | O_RDWR, 0666);
+    if (fd == -1) {
+        perror("Error al crear el archivo");
         exit(EXIT_FAILURE);
     }
-    if (fwrite(array, PID_SIZE, NUM_PROCESOS, fileTemp) != NUM_PROCESOS) {
-        perror("Error en fwrite");
-        fclose(fileTemp);
+    if (ftruncate(fd, FILE_SIZE) == -1) {
+        perror("Error al ajustar el tamaño del archivo");
         exit(EXIT_FAILURE);
     }
-    fclose(fileTemp);
-    file = open(PID_FILE, O_RDWR);
-    if (file == -1) {
-        perror("Error al abrir el archivo");
-        exit(EXIT_FAILURE);
-    }
-    pids = (pid_t*) mmap(NULL, NUM_PROCESOS * PID_SIZE, PROT_WRITE, MAP_SHARED, file, 0);
+    pids = (pid_t *)mmap(0, FILE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (pids == MAP_FAILED) {
-        perror("Error en mmap");
-        close(file);
+        perror("Error al mapear el archivo");
         exit(EXIT_FAILURE);
     }
+    close(fd);
 }
 
 void desproyectar_archivo(int file) {
