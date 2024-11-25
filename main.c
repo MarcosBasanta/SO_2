@@ -59,7 +59,7 @@ int main() {
         waitpid(pidAux, NULL, 0);
     }
 
-    sleep(10); // Prueba para comprobar que los procesos terminan
+    pause(); // Prueba para comprobar que los procesos terminan
 
     desproyectar_archivo();
     // Borrar el archivo de PIDs al finalizar
