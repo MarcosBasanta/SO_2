@@ -1,3 +1,9 @@
+// Instrucciones de uso en el README.md
+// Falta limpiar el codigo, salidas de comprobacion, printf, etc
+// Añadir interfaz de usuario minima para dar informacion y feedback
+// Sincronizar la escritura de los PIDs en el archivo (Opcional)
+// Sincronizar la lectura de los PIDs en el archivo (Opcional)
+
 #define _HPUX_SOURCE
 
 #include <stdio.h>
@@ -27,13 +33,6 @@ pid_t leer_pid(int index);
 void proyectar_archivo(int file);
 void desproyectar_archivo(int file);
 
-// Casi acabado el trabajo esta, se envia la señal, con los caminos que estan en  el arbol, bueno eso creo, hay que comprobarlo
-// Instrucciones de uso en el README.md
-// Falta comprobar si de verdad se hace bien el arbol y la eliminacion
-// Falta limpiar el codigo, salidas de comprobacion, printf, etc
-// Sincronizar la escritura de los PIDs en el archivo (Opcional)
-// Sincronizar la lectura de los PIDs en el archivo (Opcional)
-
 int main() {
     int i, file;
     pidPrincipal = getpid();
@@ -46,6 +45,8 @@ int main() {
     pause();
 
     if (getpid() == pidPrincipal) {
+        fprintf(stdout, "Soy el proceso %d y envio mi señal a %d\n", pidPrincipal, pidHijo[0]);
+        fflush(stdout); // Forzar el vaciado del búfer
         kill(pidHijo[0], SIGTERM);
 
         waitpid(pidHijo[0], NULL, 0);
@@ -410,7 +411,7 @@ void configurar_manejador() {
 void manejador(int sig) {
     pid_t pidYo;
     pidYo = getpid();
-    printf("Proceso %d recibió la señal %d\n", pidYo, sig);
+    fprintf(stdout, "Proceso %d recibió la señal %d\n", pidYo, sig);
     if (sig == SIGTERM) {
         if(pidYo == pidPrincipal) {
             return;
@@ -427,9 +428,13 @@ void manejador(int sig) {
         }
         if(pidHijo[0] != -1) {
             kill(pidHijo[0], SIGTERM);
+            fprintf(stdout, "Soy el proceso %d y envio mi señal a %d\n", pidYo, pidHijo[0]);
+            fflush(stdout); // Forzar el vaciado del búfer
         }
         if (pidHijo[1] != -1) {
             kill(pidHijo[1], SIGTERM);
+            fprintf(stdout, "Soy el proceso %d y envio mi señal a %d\n", pidYo, pidHijo[1]);
+            fflush(stdout); // Forzar el vaciado del búfer
         }
         if(pidHijo[0] != -1) {
             waitpid(pidHijo[0], NULL, 0);
