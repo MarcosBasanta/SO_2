@@ -19,7 +19,7 @@ int file;
 pid_t *pids;
 pid_t pidHijo[2];
 
-pid_t crea_jerarquia();
+void crea_jerarquia();
 void configurar_manejador();
 void manejador(int sig);
 void escribir_pid(pid_t pid, int index);
@@ -37,43 +37,44 @@ void desproyectar_archivo();
 
 int main() {
     int i;
-    pid_t pidAux;
 
     pidPrincipal = getpid();
 
     configurar_manejador();
     proyectar_archivo();
 
-    pidAux = crea_jerarquia();
+    crea_jerarquia();
 
     // system("pstree | grep 'main'"); // Comentar en encina
     pause();
 
+
     if (getpid() == pidPrincipal) {
-        fprintf(stdout, "Proceso %d envía señal SIGTERM a %d\n", pidPrincipal, pidAux);
+        fprintf(stdout, "Proceso %d envía señal SIGTERM a %d\n", pidPrincipal, pidHijo[0]);
         fflush(stdout); // Forzar el vaciado del búfer
+
         // Enviar señal SIGTERM al hijo
-        kill(pidAux, SIGTERM);
+        kill(pidHijo[0], SIGTERM);
         // Esperar a que el hijo termine
-        waitpid(pidAux, NULL, 0);
+        waitpid(pidHijo[0], NULL, 0);
+
+        pause(); // Prueba para comprobar que los procesos terminan
+
+        desproyectar_archivo();
+        
+        // Borrar el archivo de PIDs al finalizar
+        if (remove(PID_FILE) == 0) {
+            printf("Archivo de PIDs eliminado correctamente.\n");
+        } else {
+            fprintf(stderr, "Error al eliminar el archivo de PIDs");
+            fflush(stdout); // Forzar el vaciado del búfer
+        }
     }
-
-    pause(); // Prueba para comprobar que los procesos terminan
-
-    desproyectar_archivo();
-    // Borrar el archivo de PIDs al finalizar
-    if (remove(PID_FILE) == 0) {
-        printf("Archivo de PIDs eliminado correctamente.\n");
-    } else {
-        fprintf(stderr, "Error al eliminar el archivo de PIDs");
-        fflush(stdout); // Forzar el vaciado del búfer
-    }
-
 
     return 0;
 }
 
-pid_t crea_jerarquia() {
+void crea_jerarquia() {
     pid_t pidYo;
     switch(pidHijo[0] = fork()) { // Proceso 38
         case -1:
@@ -406,8 +407,6 @@ pid_t crea_jerarquia() {
             fflush(stdout); // Forzar el vaciado del búfer
             break;
     }
-     
-    return pidHijo[0];
 }
 
 void configurar_manejador() {
@@ -435,14 +434,6 @@ void manejador(int sig) {
         fflush(stdout); // Forzar el vaciado del búfer
         if (pidYo == pidPrincipal) {
             return;
-        }
-        fprintf(stdout, "Proceso %d continua 1\n", pidYo);
-        fflush(stdout); // Forzar el vaciado del búfer
-
-        if (pids == MAP_FAILED) {
-            fprintf(stderr, "Error en mmap");
-            fflush(stdout); // Forzar el vaciado del búfer
-            exit(EXIT_FAILURE);
         }
         if (pidYo == leer_pid(0)) { // Proceso 51
             pidHijo[0] = leer_pid(2); // Proceso 54
@@ -484,7 +475,6 @@ void escribir_pid(pid_t pid, int index) {
     fprintf(stdout, "Proceso %d entra en escribir pid en %d\n", pid, index);
     fflush(stdout); // Forzar el vaciado del búfer
     pids[index] = pid;
-    msync((void*)pids, NUM_PROCESOS * PID_SIZE, MS_SYNC); // Sincronizar los cambios con el archivo
 }
 
 pid_t leer_pid(int index) {
@@ -496,6 +486,7 @@ pid_t leer_pid(int index) {
 }
 
 void proyectar_archivo() {
+    creat(PID_FILE, 0666);
     file=open(PID_FILE, O_RDWR);
 
     if (file == -1) {
@@ -538,4 +529,6 @@ void desproyectar_archivo() {
     }
 
     close(file);
+
+    fprintf(stdout, "Archivo de PIDs cerrado correctamente\n");
 }
