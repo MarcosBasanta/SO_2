@@ -28,12 +28,11 @@ void proyectar_archivo(int file);
 void desproyectar_archivo(int file);
 
 // Casi acabado el trabajo esta, se envia la señal, con los caminos que estan en  el arbol, bueno eso creo, hay que comprobarlo
-// Instrucciones de uso en el README
-// Error en encina escribe bien en memoria mapeada, se va guardando bien, pero a la hora de leer no lo hace bien y fuerza la finalizacion del proceso
-// Falta sincronizar la escritura de los PIDs en el archivo
-// Falta sincronizar la lectura de los PIDs en el archivo
-// Falta comprobar si de verdad se hace bien
-// Falta comprobar funcionamiento en encina
+// Instrucciones de uso en el README.md
+// Falta comprobar si de verdad se hace bien el arbol y la eliminacion
+// Falta limpiar el codigo, salidas de comprobacion, printf, etc
+// Sincronizar la escritura de los PIDs en el archivo (Opcional)
+// Sincronizar la lectura de los PIDs en el archivo (Opcional)
 
 int main() {
     int i, file;
