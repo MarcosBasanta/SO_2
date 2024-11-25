@@ -30,7 +30,7 @@ void desproyectar_archivo();
 
 // Casi acabado el trabajo esta, se envia la señal, con los caminos que estan en  el arbol, bueno eso creo, hay que comprobarlo
 // Instrucciones de uso en el README
-// Encina no propaga la señal SIGTERM a los hijos
+// Encina el proceso del main no espera a nadie, o si espera a su hijo pero no a los demas
 // Falta sincronizar la escritura de los PIDs en el archivo
 // Falta sincronizar la lectura de los PIDs en el archivo
 // Falta comprobar si de verdad se hace bien
@@ -395,13 +395,14 @@ void manejador(int sig) {
         } else if (pidYo == leer_pid(3)) { // Proceso 55
             pidAux = leer_pid(4); // Proceso 56
         } else {
-            fprintf(stdout, "Proceso %d envía señal SIGTERM a todos sus hijos\n", pidYo);
             // Enviar señal SIGTERM a todos los hijos
             if(pidHijo[0] != -1) {
                 kill(pidHijo[0], SIGTERM);
+                fprintf(stdout, "Proceso %d envía señal SIGTERM a %d\n", pidYo, pidHijo[0]);
             }
             if (pidHijo[1] != -1) {
                 kill(pidHijo[1], SIGTERM);
+                fprintf(stdout, "Proceso %d envía señal SIGTERM a %d\n", pidYo, pidHijo[1]);
             }
             if(pidHijo[0] != -1) {
                 waitpid(pidHijo[0], NULL, 0);
