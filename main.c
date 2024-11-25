@@ -26,7 +26,6 @@ pid_t leer_pid(int index);
 void proyectar_archivo(int file);
 void desproyectar_archivo(int file);
 
-
 // Casi acabado el trabajo esta, se envia la señal, con los caminos que estan en  el arbol, bueno eso creo, hay que comprobarlo
 // Instrucciones de uso en el README
 // Error en encina escribe bien en memoria mapeada, se va guardando bien, pero a la hora de leer no lo hace bien y fuerza la finalizacion del proceso
