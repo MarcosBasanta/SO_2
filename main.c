@@ -31,11 +31,11 @@ void desproyectar_archivo();
 // Casi acabado el trabajo esta, se envia la señal, con los caminos que estan en  el arbol, bueno eso creo, hay que comprobarlo
 // Instrucciones de uso en el README
 // Encina el proceso del main no espera a nadie, o si espera a su hijo pero no a los demas
+// setpgid(0, pidPrincipal); // Esta puede ser la solucion, unir al grupo de procesos del proceso principal
 // Falta sincronizar la escritura de los PIDs en el archivo
 // Falta sincronizar la lectura de los PIDs en el archivo
 // Falta comprobar si de verdad se hace bien
 // Falta comprobar funcionamiento en encina
-
 
 int main() {
     int i;
@@ -383,45 +383,38 @@ void configurar_manejador() {
 }
 
 void manejador(int sig) {
-    printf("Proceso %d recibió la señal %d\n", getpid(), sig);
+    pid_t pidYo;
+    pidYo = getpid();
+    printf("Proceso %d recibió la señal %d\n", pidYo, sig);
     if (sig == SIGTERM) {
-        pid_t pidYo, pidAux;
-        pidYo = getpid();
         if (pidYo == pidPrincipal) {
             return;
         }
         if (pidYo == leer_pid(0)) { // Proceso 51
-            pidAux = leer_pid(2); // Proceso 54
+            pidHijo[0] = leer_pid(2); // Proceso 54
+            pidHijo[1] = -1;
         } else if(pidYo == leer_pid(1)) { // Proceso 53
-            pidAux = leer_pid(3); // Proceso 55
+            pidHijo[0] = leer_pid(3); // Proceso 55
+            pidHijo[1] = -1;
         } else if (pidYo == leer_pid(3)) { // Proceso 55
-            pidAux = leer_pid(4); // Proceso 56
-        } else {
-            // Enviar señal SIGTERM a todos los hijos
-            if(pidHijo[0] != -1) {
-                kill(pidHijo[0], SIGTERM);
-                fprintf(stdout, "Proceso %d envía señal SIGTERM a %d\n", pidYo, pidHijo[0]);
-            }
-            if (pidHijo[1] != -1) {
-                kill(pidHijo[1], SIGTERM);
-                fprintf(stdout, "Proceso %d envía señal SIGTERM a %d\n", pidYo, pidHijo[1]);
-            }
-            if(pidHijo[0] != -1) {
-                waitpid(pidHijo[0], NULL, 0);
-            }
-            if (pidHijo[1] != -1) {
-                waitpid(pidHijo[1], NULL, 0);
-            }
-            exit(0); // Terminar el proceso
+            pidHijo[0] = leer_pid(4); // Proceso 56
+            pidHijo[1] = -1;
         }
-
-        fprintf(stdout, "Proceso %d envía señal SIGTERM a %d\n", pidYo, pidAux);
-        // Enviar señal SIGTERM al hijo específico
-        kill(pidAux, SIGTERM);
-
-        // Esperar a que el hijo termine
-        waitpid(pidAux, NULL, 0);
-
+        // Enviar señal SIGTERM a todos los hijos
+        if(pidHijo[0] != -1) {
+            kill(pidHijo[0], SIGTERM);
+            fprintf(stdout, "Proceso %d envía señal SIGTERM a %d\n", pidYo, pidHijo[0]);
+        }
+        if (pidHijo[1] != -1) {
+            kill(pidHijo[1], SIGTERM);
+            fprintf(stdout, "Proceso %d envía señal SIGTERM a %d\n", pidYo, pidHijo[1]);
+        }
+        if(pidHijo[0] != -1) {
+            waitpid(pidHijo[0], NULL, 0);
+        }
+        if (pidHijo[1] != -1) {
+            waitpid(pidHijo[1], NULL, 0);
+        }
         exit(0); // Terminar el proceso
     }
 }
