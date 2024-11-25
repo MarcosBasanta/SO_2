@@ -453,16 +453,19 @@ pid_t leer_pid(int index) {
 void proyectar_archivo(int file) {
     int fd = open(PID_FILE, O_CREAT | O_RDWR, 0666);
     if (fd == -1) {
-        perror("Error al crear el archivo");
+        fprintf(stderr, "Error al crear el archivo");
+        fflush(stdout);
         exit(EXIT_FAILURE);
     }
     if (ftruncate(fd, FILE_SIZE) == -1) {
-        perror("Error al ajustar el tamaño del archivo");
+        fprintf(stderr, "Error al ajustar el tamaño del archivo");
+        fflush(stdout);
         exit(EXIT_FAILURE);
     }
     pids = (pid_t *)mmap(0, FILE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (pids == MAP_FAILED) {
-        perror("Error al mapear el archivo");
+        fprintf(stderr, "Error al mapear el archivo");
+        fflush(stdout);
         exit(EXIT_FAILURE);
     }
     close(fd);
