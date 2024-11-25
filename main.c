@@ -11,7 +11,7 @@
 #include <sys/mman.h>
 
 #define PID_FILE "pids.txt"
-#define NUM_PROCESOS 7
+#define NUM_PROCESOS 5
 #define PID_SIZE sizeof(pid_t)
 
 pid_t pidPrincipal;
@@ -108,8 +108,7 @@ pid_t crea_jerarquia() {
                                                     return 9;
                                                     break;
                                                 case 0:
-                                                    pidYo=getpid();
-                                                    escribir_pid(pidYo, 0);
+                                                    // escribir_pid(pidYo, 0);
                                                     switch (pidHijo[0] = fork()) { // Proceso 54
                                                         case -1:
                                                             perror("main:proceso54:fork");
@@ -117,7 +116,7 @@ pid_t crea_jerarquia() {
                                                             break;
                                                         case 0:
                                                             pidYo=getpid();
-                                                            escribir_pid(pidYo, 4);
+                                                            escribir_pid(pidYo, 2);
                                                             switch (pidHijo[0] = fork()) { // Proceso 56
                                                                 case -1:
                                                                     perror("main:proceso56:fork");
@@ -125,7 +124,7 @@ pid_t crea_jerarquia() {
                                                                     break;
                                                                 case 0:
                                                                     pidYo=getpid();
-                                                                    escribir_pid(pidYo, 6);
+                                                                    escribir_pid(pidYo, 4);
                                                                     switch (pidHijo[0] = fork()) { // Proceso 57
                                                                         case -1:
                                                                             perror("main:proceso57:fork");
@@ -158,13 +157,17 @@ pid_t crea_jerarquia() {
                                                                     exit(0);
                                                                     break;
                                                             }
+                                                            pidHijo[0] = -1;
                                                             pidHijo[1] = -1;
+                                                            pidYo=getpid();
                                                             fprintf(stdout, "Soy el proceso 54(pid=%d)\n", pidYo);
                                                             pause();
                                                             exit(0);
                                                             break;
                                                     }
+                                                    pidHijo[0] = -1;
                                                     pidHijo[1] = -1;
+                                                    pidYo=getpid();
                                                     fprintf(stdout, "Soy el proceso 50(pid=%d)\n", pidYo);
                                                     pause();
                                                     exit(0);
@@ -205,7 +208,7 @@ pid_t crea_jerarquia() {
                                                     pidHijo[0] = -1;
                                                     pidHijo[1] = -1;
                                                     pidYo=getpid();
-                                                    escribir_pid(pidYo, 1);
+                                                    escribir_pid(pidYo, 0);
                                                     fprintf(stdout, "Soy el proceso 51(pid=%d)\n", pidYo);
                                                     pause();
                                                     exit(0);
@@ -255,8 +258,7 @@ pid_t crea_jerarquia() {
                                                     return 9;
                                                     break;
                                                 case 0:
-                                                    pidYo=getpid();
-                                                    escribir_pid(pidYo, 2);
+                                                    // escribir_pid(pidYo, 2);
                                                     switch (pidHijo[0] = fork()) { // Proceso 55
                                                         case -1:
                                                             perror("main:proceso55:fork");
@@ -266,13 +268,15 @@ pid_t crea_jerarquia() {
                                                             pidHijo[0] = -1;
                                                             pidHijo[1] = -1;
                                                             pidYo=getpid();
-                                                            escribir_pid(pidYo, 5);
+                                                            escribir_pid(pidYo, 3);
                                                             fprintf(stdout, "Soy el proceso 55(pid=%d)\n", pidYo);
                                                             pause();
                                                             exit(0);
                                                             break;
                                                     }
+                                                    pidHijo[0] = -1;
                                                     pidHijo[1] = -1;
+                                                    pidYo=getpid();
                                                     fprintf(stdout, "Soy el proceso 52(pid=%d)\n", pidYo);
                                                     pause();
                                                     exit(0);
@@ -313,7 +317,7 @@ pid_t crea_jerarquia() {
                                                     pidHijo[0] = -1;
                                                     pidHijo[1] = -1;
                                                     pidYo=getpid();
-                                                    escribir_pid(pidYo, 3);
+                                                    escribir_pid(pidYo, 1);
                                                     fprintf(stdout, "Soy el proceso 53(pid=%d)\n", pidYo);
                                                     pause();
                                                     exit(0);
@@ -384,18 +388,12 @@ void manejador(int sig) {
         if (pidYo == pidPrincipal) {
             return;
         }
-        if (pidYo == leer_pid(0)) { // Proceso 50
-            exit(0); // Terminar el proceso
-        } else if (pidYo == leer_pid(1)) { // Proceso 51
-            pidAux = leer_pid(4); // Proceso 54
-        } else if (pidYo == leer_pid(2)) { // Proceso 52
-            exit(0); // Terminar el proceso
-        } else if(pidYo == leer_pid(3)) {
-            pidAux = leer_pid(5); // Proceso 55
-        } else if (pidYo == leer_pid(4)) { // Proceso 54
-            exit(0); // Terminar el proceso
-        } else if (pidYo == leer_pid(5)) { // Proceso 55
-            pidAux = leer_pid(6); // Proceso 56
+        if (pidYo == leer_pid(0)) { // Proceso 51
+            pidAux = leer_pid(2); // Proceso 54
+        } else if(pidYo == leer_pid(1)) { // Proceso 53
+            pidAux = leer_pid(3); // Proceso 55
+        } else if (pidYo == leer_pid(3)) { // Proceso 55
+            pidAux = leer_pid(4); // Proceso 56
         } else {
             fprintf(stdout, "Proceso %d envía señal SIGTERM a todos sus hijos\n", pidYo);
             // Enviar señal SIGTERM a todos los hijos
