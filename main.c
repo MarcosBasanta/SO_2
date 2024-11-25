@@ -10,12 +10,11 @@
 #include <sys/file.h>
 #include <sys/mman.h>
 
-#define PID_FILE "pids.txt"
-#define NUM_PROCESOS 5
+#define PID_FILE "pids.bin"
+#define NUM_PROCESOS 6
 #define PID_SIZE sizeof(pid_t)
 
 pid_t pidPrincipal;
-int file;
 pid_t *pids;
 pid_t pidHijo[2];
 
@@ -24,8 +23,9 @@ void configurar_manejador();
 void manejador(int sig);
 void escribir_pid(pid_t pid, int index);
 pid_t leer_pid(int index);
-void proyectar_archivo();
-void desproyectar_archivo();
+void proyectar_archivo(int file);
+void desproyectar_archivo(int file);
+
 
 // Casi acabado el trabajo esta, se envia la señal, con los caminos que estan en  el arbol, bueno eso creo, hay que comprobarlo
 // Instrucciones de uso en el README
@@ -36,39 +36,18 @@ void desproyectar_archivo();
 // Falta comprobar funcionamiento en encina
 
 int main() {
-    int i;
-
+    int i, file;
     pidPrincipal = getpid();
-
     configurar_manejador();
-    proyectar_archivo();
-
+    proyectar_archivo(file);
     crea_jerarquia();
 
-    // system("pstree | grep 'main'"); // Comentar en encina
     pause();
-
-
     if (getpid() == pidPrincipal) {
-        fprintf(stdout, "Proceso %d envía señal SIGTERM a %d\n", pidPrincipal, pidHijo[0]);
-        fflush(stdout); // Forzar el vaciado del búfer
-
-        // Enviar señal SIGTERM al hijo
         kill(pidHijo[0], SIGTERM);
-        // Esperar a que el hijo termine
         waitpid(pidHijo[0], NULL, 0);
-
-        pause(); // Prueba para comprobar que los procesos terminan
-
-        desproyectar_archivo();
-        
-        // Borrar el archivo de PIDs al finalizar
-        if (remove(PID_FILE) == 0) {
-            printf("Archivo de PIDs eliminado correctamente.\n");
-        } else {
-            fprintf(stderr, "Error al eliminar el archivo de PIDs");
-            fflush(stdout); // Forzar el vaciado del búfer
-        }
+        desproyectar_archivo(file);
+        exit(0);
     }
 
     return 0;
@@ -80,42 +59,42 @@ void crea_jerarquia() {
         case -1:
             fprintf(stderr, "main:proceso38:fork");
             fflush(stdout); // Forzar el vaciado del búfer
-            return 2;
+            return;
             break;
         case 0:
             switch (pidHijo[0] = fork()) { // Proceso 39
                 case -1:
                     fprintf(stderr, "main:proceso39:fork");
                     fflush(stdout); // Forzar el vaciado del búfer
-                    return 3;
+                    return;
                     break;
                 case 0:
                     switch(pidHijo[0] = fork()) { // Proceso 40
                         case -1:
                             fprintf(stderr, "main:proceso40:fork");
                             fflush(stdout); // Forzar el vaciado del búfer
-                            return 4;
+                            return;
                             break;
                         case 0:
                             switch (pidHijo[0] = fork()) { // Proceso 42
                                 case -1:
                                     fprintf(stderr, "main:proceso42:fork");
                                     fflush(stdout); // Forzar el vaciado del búfer
-                                    return 6;
+                                    return;
                                     break;
                                 case 0:
                                     switch (pidHijo[0] = fork()) { // Proceso 46
                                         case -1:
                                             fprintf(stderr, "main:proceso46:fork");
                                             fflush(stdout); // Forzar el vaciado del búfer
-                                            return 8;
+                                            return;
                                             break;
                                         case 0:
                                             switch (pidHijo[0] = fork()) { // Proceso 50
                                                 case -1:
                                                     fprintf(stderr, "main:proceso50:fork");
                                                     fflush(stdout); // Forzar el vaciado del búfer
-                                                    return 9;
+                                                    return;
                                                     break;
                                                 case 0:
                                                     // escribir_pid(pidYo, 0);
@@ -123,7 +102,7 @@ void crea_jerarquia() {
                                                         case -1:
                                                             fprintf(stderr, "main:proceso54:fork");
                                                             fflush(stdout); // Forzar el vaciado del búfer
-                                                            return 9;
+                                                            return;
                                                             break;
                                                         case 0:
                                                             pidYo=getpid();
@@ -132,7 +111,7 @@ void crea_jerarquia() {
                                                                 case -1:
                                                                     fprintf(stderr, "main:proceso56:fork");
                                                                     fflush(stdout); // Forzar el vaciado del búfer
-                                                                    return 9;
+                                                                    return;
                                                                     break;
                                                                 case 0:
                                                                     pidYo=getpid();
@@ -141,14 +120,14 @@ void crea_jerarquia() {
                                                                         case -1:
                                                                             fprintf(stderr, "main:proceso57:fork");
                                                                             fflush(stdout); // Forzar el vaciado del búfer
-                                                                            return 9;
+                                                                            return;
                                                                             break;
                                                                         case 0:
                                                                             switch (pidHijo[0] = fork()) { // Proceso 58
                                                                                 case -1:
                                                                                     fprintf(stderr, "main:proceso58:fork");
                                                                                     fflush(stdout); // Forzar el vaciado del búfer
-                                                                                    return 9;
+                                                                                    return;
                                                                                     break;
                                                                                 case 0:
                                                                                     pidHijo[0] = -1;
@@ -211,21 +190,21 @@ void crea_jerarquia() {
                                 case -1:
                                     fprintf(stderr, "main:proceso43:fork");
                                     fflush(stdout); // Forzar el vaciado del búfer
-                                    return 7;
+                                    return;
                                     break;
                                 case 0:
                                     switch (pidHijo[0] = fork()) { // Proceso 47
                                         case -1:
                                             fprintf(stderr, "main:proceso47:fork");
                                             fflush(stdout); // Forzar el vaciado del búfer
-                                            return 8;
+                                            return;
                                             break;
                                         case 0:
                                             switch (pidHijo[0] = fork()) { // Proceso 51
                                                 case -1:
                                                     fprintf(stderr, "main:proceso51:fork");
                                                     fflush(stdout); // Forzar el vaciado del búfer
-                                                    return 9;
+                                                    return;
                                                     break;
                                                 case 0:
                                                     pidYo=getpid();
@@ -265,28 +244,28 @@ void crea_jerarquia() {
                         case -1:
                             fprintf(stderr, "main:proceso41:fork");
                             fflush(stdout); // Forzar el vaciado del búfer
-                            return 5;
+                            return;
                             break;
                         case 0:
                             switch (pidHijo[0] = fork()) { // Proceso 44
                                 case -1:
                                     fprintf(stderr, "main:proceso44:fork");
                                     fflush(stdout); // Forzar el vaciado del búfer
-                                    return 6;
+                                    return;
                                     break;
                                 case 0:
                                     switch (pidHijo[0] = fork()) { // Proceso 48
                                         case -1:
                                             fprintf(stderr, "main:proceso48:fork");
                                             fflush(stdout); // Forzar el vaciado del búfer
-                                            return 8;
+                                            return;
                                             break;
                                         case 0:
                                             switch (pidHijo[0] = fork()) { // Proceso 52
                                                 case -1:
                                                     fprintf(stderr, "main:proceso52:fork");
                                                     fflush(stdout); // Forzar el vaciado del búfer
-                                                    return 9;
+                                                    return;
                                                     break;
                                                 case 0:
                                                     // escribir_pid(pidYo, 2);
@@ -294,7 +273,7 @@ void crea_jerarquia() {
                                                         case -1:
                                                             fprintf(stderr, "main:proceso55:fork");
                                                             fflush(stdout); // Forzar el vaciado del búfer
-                                                            return 9;
+                                                            return;
                                                             break;
                                                         case 0:
                                                             pidYo=getpid();
@@ -336,21 +315,21 @@ void crea_jerarquia() {
                                 case -1:
                                     fprintf(stderr, "main:proceso45:fork");
                                     fflush(stdout); // Forzar el vaciado del búfer
-                                    return 7;
+                                    return;
                                     break;
                                 case 0:
                                     switch (pidHijo[0] = fork()) { // Proceso 49
                                         case -1:
                                             fprintf(stderr, "main:proceso49:fork");
                                             fflush(stdout); // Forzar el vaciado del búfer
-                                            return 8;
+                                            return;
                                             break;
                                         case 0:
                                             switch (pidHijo[0] = fork()) { // Proceso 53
                                                 case -1:
                                                     fprintf(stderr, "main:proceso53:fork");
                                                     fflush(stdout); // Forzar el vaciado del búfer
-                                                    return 9;
+                                                    return;
                                                     break;
                                                 case 0:
                                                     pidYo=getpid();
@@ -411,16 +390,14 @@ void crea_jerarquia() {
 
 void configurar_manejador() {
     struct sigaction sa;
-
     // Configurar la estructura sigaction
     sa.sa_handler = manejador;
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = 0;
-
     // Establecer el manejador de señales para SIGTERM
     if (sigaction(SIGTERM, &sa, NULL) == -1) {
         fprintf(stderr, "Error al establecer el manejador de señales");
-        fflush(stdout); // Forzar el vaciado del búfer
+        fflush(stdout);
         exit(EXIT_FAILURE);
     }
 }
@@ -430,9 +407,7 @@ void manejador(int sig) {
     pidYo = getpid();
     printf("Proceso %d recibió la señal %d\n", pidYo, sig);
     if (sig == SIGTERM) {
-        fprintf(stdout, "Proceso %d entra en señal\n", pidYo);
-        fflush(stdout); // Forzar el vaciado del búfer
-        if (pidYo == pidPrincipal) {
+        if(pidYo == pidPrincipal) {
             return;
         }
         if (pidYo == leer_pid(0)) { // Proceso 51
@@ -445,90 +420,73 @@ void manejador(int sig) {
             pidHijo[0] = leer_pid(4); // Proceso 56
             pidHijo[1] = -1;
         }
-
-        // Enviar señal SIGTERM a todos los hijos
-        fprintf(stdout, "Proceso %d envía señal SIGTERM a %d y %d\n", pidYo, pidHijo[0], pidHijo[1]);
-        fflush(stdout); // Forzar el vaciado del búfer
         if(pidHijo[0] != -1) {
             kill(pidHijo[0], SIGTERM);
-            fprintf(stdout, "Proceso %d envía señal SIGTERM a %d\n", pidYo, pidHijo[0]);
-            fflush(stdout); // Forzar el vaciado del búfer
         }
-
         if (pidHijo[1] != -1) {
             kill(pidHijo[1], SIGTERM);
-            fprintf(stdout, "Proceso %d envía señal SIGTERM a %d\n", pidYo, pidHijo[1]);
-            fflush(stdout); // Forzar el vaciado del búfer
         }
-
         if(pidHijo[0] != -1) {
             waitpid(pidHijo[0], NULL, 0);
         }
         if (pidHijo[1] != -1) {
             waitpid(pidHijo[1], NULL, 0);
         }
-        exit(0); // Terminar el proceso
+        exit(0);
     }
 }
 
 void escribir_pid(pid_t pid, int index) {
-    fprintf(stdout, "Proceso %d entra en escribir pid en %d\n", pid, index);
-    fflush(stdout); // Forzar el vaciado del búfer
     pids[index] = pid;
 }
 
 pid_t leer_pid(int index) {
-    fprintf(stdout, "Proceso entra en leer pid\n");
-    fflush(stdout); // Forzar el vaciado del búfer
-    fprintf(stdout, "Proceso lee pid %d\n", pids[index]);
-    fflush(stdout); // Forzar el vaciado del búfer
-    return pids[index];
+    pid_t pid;
+    pids[5] = 0;
+    pid = *(pids+index);
+    return pid;
 }
 
-void proyectar_archivo() {
-    creat(PID_FILE, 0666);
-    file=open(PID_FILE, O_RDWR);
+void proyectar_archivo(int file) {
+    FILE *fileTemp;
+    pid_t array[NUM_PROCESOS] = {0};
 
+    fileTemp = fopen(PID_FILE, "wb+");
+    if (fileTemp == NULL) {
+        perror("Error al abrir el archivo");
+        exit(EXIT_FAILURE);
+    }
+    if (fwrite(array, PID_SIZE, NUM_PROCESOS, fileTemp) != NUM_PROCESOS) {
+        perror("Error en fwrite");
+        fclose(fileTemp);
+        exit(EXIT_FAILURE);
+    }
+    fclose(fileTemp);
+    file = open(PID_FILE, O_RDWR);
     if (file == -1) {
-        fprintf(stderr, "Error al abrir el archivo");
-        fflush(stdout); // Forzar el vaciado del búfer
+        perror("Error al abrir el archivo");
         exit(EXIT_FAILURE);
     }
-
-    // Desplazar el puntero del archivo para que entren 7 PIDs
-    if (lseek(file, NUM_PROCESOS * PID_SIZE - 1, SEEK_SET) == -1) {
-        fprintf(stderr, "Error en lseek");
-        fflush(stdout); // Forzar el vaciado del búfer
-        close(file);
-        exit(EXIT_FAILURE);
-    }
-
-    // Escribir un byte vacío para extender el archivo
-    if (write(file, "", 1) != 1) {
-        fprintf(stderr, "Error en write");
-        fflush(stdout); // Forzar el vaciado del búfer
-        close(file);
-        exit(EXIT_FAILURE);
-    }
-
-    
-    pids= (pid_t *) mmap(NULL, NUM_PROCESOS * PID_SIZE, PROT_WRITE, MAP_SHARED, file, 0);
+    pids = (pid_t*) mmap(NULL, NUM_PROCESOS * PID_SIZE, PROT_WRITE, MAP_SHARED, file, 0);
     if (pids == MAP_FAILED) {
-        fprintf(stderr, "Error en mmap");
-        fflush(stdout); // Forzar el vaciado del búfer
+        perror("Error en mmap");
         close(file);
         exit(EXIT_FAILURE);
     }
 }
 
-void desproyectar_archivo() {
+void desproyectar_archivo(int file) {
     // Desmapear la memoria y cerrar el archivo
     if (munmap((void*)pids, NUM_PROCESOS * PID_SIZE) == -1) {
         fprintf(stderr, "Error en munmap");
-        fflush(stdout); // Forzar el vaciado del búfer
+        fflush(stdout);
     }
-
     close(file);
-
-    fprintf(stdout, "Archivo de PIDs cerrado correctamente\n");
+    if (remove(PID_FILE) == 0) {
+        fprintf(stdout, "Archivo de PIDs eliminado correctamente.\n");
+        fflush(stdout);
+    } else {
+        fprintf(stderr, "Error al eliminar el archivo de PIDs\n");
+        fflush(stdout);
+    }
 }

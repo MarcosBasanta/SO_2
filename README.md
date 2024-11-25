@@ -94,3 +94,14 @@ ps -f | grep "dom$" | grep -v grep | sort | Arbol_dominO
 - `readme.md`: Este archivo de documentación.
 
 ¡Disfruta explorando la creación de árboles de procesos en Unix!
+
+
+## Anotaciones 
+
+- Casi acabado el trabajo esta, se envia la señal, con los caminos que estan en  el arbol, bueno eso creo, hay que comprobarlo
+- Instrucciones de uso en el README
+- Error en encina escribe bien en memoria mapeada, se va guardando bien, pero a la hora de leer no lo hace bien y fuerza la finalizacion del proceso, solucion, escribir antes de leer, porque, no lo se
+- Falta sincronizar la escritura de los PIDs en el archivo
+- Falta sincronizar la lectura de los PIDs en el archivo
+- Falta comprobar si de verdad se hace bien
+- Falta comprobar funcionamiento en encina
