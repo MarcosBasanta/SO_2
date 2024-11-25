@@ -19,7 +19,7 @@ pid_t pidPrincipal;
 int file;
 pid_t *pids;
 
-int crea_jerarquia();
+pid_t crea_jerarquia();
 void configurar_manejador();
 void manejador(int sig);
 void escribir_pid(pid_t pid, int index);
@@ -401,7 +401,7 @@ pid_t leer_pid(int index) {
 }
 
 void proyectar_archivo() {
-    file=open(PID_FILE, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+    file=open(PID_FILE, O_RDWR | O_CREAT, 0666);
     if (file == -1) {
         perror("Error al abrir el archivo");
         exit(EXIT_FAILURE);
