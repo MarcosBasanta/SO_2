@@ -83,6 +83,10 @@ El archivo de PIDs (`pids.txt`) se elimina automáticamente al finalizar el prog
 
 Dado que el binario `Arbol_dominiO` no es compatible con Unix, utilizamos `pstree` para visualizar el árbol de procesos generado por el programa. Al ejecutar el programa, se mostrará el árbol de procesos en la terminal.
 
+ps -f | grep "dom$" | grep -v grep | sort | Arbol_dominO
+
+
+
 ## Archivos del Proyecto
 
 - `main.c`: Código fuente del programa en C.
