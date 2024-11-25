@@ -29,6 +29,7 @@ void desproyectar_archivo();
 
 // Casi acabado el trabajo esta, se envia la señal, con los caminos que estan en  el arbol, bueno eso creo, hay que comprobarlo
 // Instrucciones de uso en el README
+// Encina no propaga la señal SIGTERM a los hijos
 // Falta sincronizar la escritura de los PIDs en el archivo
 // Falta sincronizar la lectura de los PIDs en el archivo
 // Falta comprobar si de verdad se hace bien
