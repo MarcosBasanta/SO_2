@@ -431,7 +431,7 @@ void proyectar_archivo() {
 
 void desproyectar_archivo() {
     // Desmapear la memoria y cerrar el archivo
-    if (munmap(pids, NUM_PROCESOS * PID_SIZE) == -1) {
+    if (munmap((void*)pids, NUM_PROCESOS * PID_SIZE) == -1) {
         perror("Error en munmap");
     }
     close(file);
