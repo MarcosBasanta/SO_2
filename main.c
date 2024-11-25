@@ -31,7 +31,7 @@ void desproyectar_archivo();
 // Casi acabado el trabajo esta, se envia la señal, con los caminos que estan en  el arbol, bueno eso creo, hay que comprobarlo
 // Instrucciones de uso en el README
 // Encina el proceso del main no espera a nadie, o si espera a su hijo pero no a los demas
-// setpgid(0, pidPrincipal); // Esta puede ser la solucion, unir al grupo de procesos del proceso principal
+// setpgid(pidYo, pidPrincipal); // Esta puede ser la solucion, unir al grupo de procesos del proceso principal
 // Falta sincronizar la escritura de los PIDs en el archivo
 // Falta sincronizar la lectura de los PIDs en el archivo
 // Falta comprobar si de verdad se hace bien
