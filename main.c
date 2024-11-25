@@ -39,24 +39,24 @@ void desproyectar_archivo();
 
 int main() {
     int i;
-    pid_t pidHijo;
+    pid_t pidAux;
 
     pidPrincipal = getpid();
 
     configurar_manejador();
     proyectar_archivo();
 
-    pidHijo = crea_jerarquia();
+    pidAux = crea_jerarquia();
 
-    system("pstree | grep 'main'");
+    // system("pstree | grep 'main'"); // Comentar en encina
     pause();
 
     if (getpid() == pidPrincipal) {
-        fprintf(stdout, "Proceso %d envía señal SIGTERM a %d\n", pidPrincipal, pidHijo);
+        fprintf(stdout, "Proceso %d envía señal SIGTERM a %d\n", pidPrincipal, pidAux);
         // Enviar señal SIGTERM al hijo
-        kill(pidHijo, SIGTERM);
+        kill(pidAux, SIGTERM);
         // Esperar a que el hijo termine
-        waitpid(pidHijo, NULL, 0);
+        waitpid(pidAux, NULL, 0);
     }
 
     desproyectar_archivo();
