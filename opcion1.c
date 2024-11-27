@@ -32,11 +32,15 @@ void escribir_pid(pid_t pid, int index);
 pid_t leer_pid(int index);
 void proyectar_archivo(int file);
 void desproyectar_archivo(int file);
+const char* obtener_cabecera();
 
 int main() {
     int i, file;
     pidPrincipal = getpid();
 
+    puts(obtener_cabecera());
+    fflush(stdout); // Forzar el vaciado del búfer
+    
     proyectar_archivo(file);
     configurar_manejador();
 
@@ -468,4 +472,30 @@ void desproyectar_archivo(int file) {
         fprintf(stderr, "Error al eliminar el archivo de PIDs\n");
         fflush(stdout);
     }
+}
+
+const char* obtener_cabecera() {
+    static const char cabecera[] = 
+        "\n"
+        "╔════════════════════════════════════════════════════════════╗\n"
+        "║             PROGRAMA DE ÁRBOL DE PROCESOS                  ║\n"
+        "╚════════════════════════════════════════════════════════════╝\n"
+        "\n"
+        "Estructura del árbol de procesos:\n\n"
+        "                    37                \n"
+        "                   /  \\              \n"
+        "                 38    39            \n"
+        "                /     /  \\           \n"
+        "              42    40    41        \n"
+        "              |     |     | \\       \n"
+        "              46   44    45  43     \n"
+        "              |     |     |   |     \n"
+        "              50   48    49  47     \n"
+        "              |     |     |   |     \n"
+        "              54   52    53  51     \n"
+        "              |     |     |   |     \n"
+        "              58   56    57  55     \n\n"
+        "Iniciando creación de procesos...\n\n";
+    
+    return cabecera;
 }
