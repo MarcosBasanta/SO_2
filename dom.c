@@ -1,9 +1,3 @@
-// Instrucciones de uso en el README.md
-// Falta limpiar el codigo, salidas de comprobacion, printf, etc
-// Añadir interfaz de usuario minima para dar informacion y feedback
-// Sincronizar la escritura de los PIDs en el archivo (Opcional)
-// Sincronizar la lectura de los PIDs en el archivo (Opcional)
-
 #define _HPUX_SOURCE
 
 #include <stdio.h>
@@ -39,13 +33,13 @@ int main() {
     pidPrincipal = getpid();
 
     puts(obtener_cabecera());
-    fflush(stdout); // Forzar el vaciado del búfer
+    fflush(stdout);
     
     proyectar_archivo(file);
     configurar_manejador();
 
     fprintf(stdout, "Soy el proceso patriarca, con pid %d\n", pidPrincipal);
-    fflush(stdout); // Forzar el vaciado del búfer
+    fflush(stdout);
     crea_jerarquia();
 
     pause();
@@ -55,7 +49,7 @@ int main() {
 
         waitpid(pidHijo[0], NULL, 0);
         fprintf(stdout, "Eliminacion de todo el arbol completada exitosamente\n");
-        fflush(stdout); // Forzar el vaciado del búfer
+        fflush(stdout);
 
         desproyectar_archivo(file);
     }
@@ -68,50 +62,49 @@ void crea_jerarquia() {
     switch(pidHijo[0] = fork()) { // Proceso 38
         case -1:
             fprintf(stderr, "main:proceso38:fork");
-            fflush(stdout); // Forzar el vaciado del búfer
+            fflush(stdout);
             return;
             break;
         case 0:
             switch (pidHijo[0] = fork()) { // Proceso 39
                 case -1:
                     fprintf(stderr, "main:proceso39:fork");
-                    fflush(stdout); // Forzar el vaciado del búfer
+                    fflush(stdout);
                     return;
                     break;
                 case 0:
                     switch(pidHijo[0] = fork()) { // Proceso 40
                         case -1:
                             fprintf(stderr, "main:proceso40:fork");
-                            fflush(stdout); // Forzar el vaciado del búfer
+                            fflush(stdout);
                             return;
                             break;
                         case 0:
                             switch (pidHijo[0] = fork()) { // Proceso 42
                                 case -1:
                                     fprintf(stderr, "main:proceso42:fork");
-                                    fflush(stdout); // Forzar el vaciado del búfer
+                                    fflush(stdout);
                                     return;
                                     break;
                                 case 0:
                                     switch (pidHijo[0] = fork()) { // Proceso 46
                                         case -1:
                                             fprintf(stderr, "main:proceso46:fork");
-                                            fflush(stdout); // Forzar el vaciado del búfer
+                                            fflush(stdout);
                                             return;
                                             break;
                                         case 0:
                                             switch (pidHijo[0] = fork()) { // Proceso 50
                                                 case -1:
                                                     fprintf(stderr, "main:proceso50:fork");
-                                                    fflush(stdout); // Forzar el vaciado del búfer
+                                                    fflush(stdout);
                                                     return;
                                                     break;
                                                 case 0:
-                                                    // escribir_pid(pidYo, 0);
                                                     switch (pidHijo[0] = fork()) { // Proceso 54
                                                         case -1:
                                                             fprintf(stderr, "main:proceso54:fork");
-                                                            fflush(stdout); // Forzar el vaciado del búfer
+                                                            fflush(stdout);
                                                             return;
                                                             break;
                                                         case 0:
@@ -120,7 +113,7 @@ void crea_jerarquia() {
                                                             switch (pidHijo[0] = fork()) { // Proceso 56
                                                                 case -1:
                                                                     fprintf(stderr, "main:proceso56:fork");
-                                                                    fflush(stdout); // Forzar el vaciado del búfer
+                                                                    fflush(stdout);
                                                                     return;
                                                                     break;
                                                                 case 0:
@@ -129,14 +122,14 @@ void crea_jerarquia() {
                                                                     switch (pidHijo[0] = fork()) { // Proceso 57
                                                                         case -1:
                                                                             fprintf(stderr, "main:proceso57:fork");
-                                                                            fflush(stdout); // Forzar el vaciado del búfer
+                                                                            fflush(stdout);
                                                                             return;
                                                                             break;
                                                                         case 0:
                                                                             switch (pidHijo[0] = fork()) { // Proceso 58
                                                                                 case -1:
                                                                                     fprintf(stderr, "main:proceso58:fork");
-                                                                                    fflush(stdout); // Forzar el vaciado del búfer
+                                                                                    fflush(stdout);
                                                                                     return;
                                                                                     break;
                                                                                 case 0:
@@ -173,21 +166,21 @@ void crea_jerarquia() {
                             switch (pidHijo[1] = fork()) { // Proceso 43
                                 case -1:
                                     fprintf(stderr, "main:proceso43:fork");
-                                    fflush(stdout); // Forzar el vaciado del búfer
+                                    fflush(stdout);
                                     return;
                                     break;
                                 case 0:
                                     switch (pidHijo[0] = fork()) { // Proceso 47
                                         case -1:
                                             fprintf(stderr, "main:proceso47:fork");
-                                            fflush(stdout); // Forzar el vaciado del búfer
+                                            fflush(stdout);
                                             return;
                                             break;
                                         case 0:
                                             switch (pidHijo[0] = fork()) { // Proceso 51
                                                 case -1:
                                                     fprintf(stderr, "main:proceso51:fork");
-                                                    fflush(stdout); // Forzar el vaciado del búfer
+                                                    fflush(stdout);
                                                     return;
                                                     break;
                                                 case 0:
@@ -212,36 +205,35 @@ void crea_jerarquia() {
                     switch (pidHijo[1] = fork()) { // Proceso 41
                         case -1:
                             fprintf(stderr, "main:proceso41:fork");
-                            fflush(stdout); // Forzar el vaciado del búfer
+                            fflush(stdout);
                             return;
                             break;
                         case 0:
                             switch (pidHijo[0] = fork()) { // Proceso 44
                                 case -1:
                                     fprintf(stderr, "main:proceso44:fork");
-                                    fflush(stdout); // Forzar el vaciado del búfer
+                                    fflush(stdout);
                                     return;
                                     break;
                                 case 0:
                                     switch (pidHijo[0] = fork()) { // Proceso 48
                                         case -1:
                                             fprintf(stderr, "main:proceso48:fork");
-                                            fflush(stdout); // Forzar el vaciado del búfer
+                                            fflush(stdout);
                                             return;
                                             break;
                                         case 0:
                                             switch (pidHijo[0] = fork()) { // Proceso 52
                                                 case -1:
                                                     fprintf(stderr, "main:proceso52:fork");
-                                                    fflush(stdout); // Forzar el vaciado del búfer
+                                                    fflush(stdout);
                                                     return;
                                                     break;
                                                 case 0:
-                                                    // escribir_pid(pidYo, 2);
                                                     switch (pidHijo[0] = fork()) { // Proceso 55
                                                         case -1:
                                                             fprintf(stderr, "main:proceso55:fork");
-                                                            fflush(stdout); // Forzar el vaciado del búfer
+                                                            fflush(stdout);
                                                             return;
                                                             break;
                                                         case 0:
@@ -268,21 +260,21 @@ void crea_jerarquia() {
                             switch (pidHijo[1] = fork()) { // Proceso 45
                                 case -1:
                                     fprintf(stderr, "main:proceso45:fork");
-                                    fflush(stdout); // Forzar el vaciado del búfer
+                                    fflush(stdout);
                                     return;
                                     break;
                                 case 0:
                                     switch (pidHijo[0] = fork()) { // Proceso 49
                                         case -1:
                                             fprintf(stderr, "main:proceso49:fork");
-                                            fflush(stdout); // Forzar el vaciado del búfer
+                                            fflush(stdout);
                                             return;
                                             break;
                                         case 0:
                                             switch (pidHijo[0] = fork()) { // Proceso 53
                                                 case -1:
                                                     fprintf(stderr, "main:proceso53:fork");
-                                                    fflush(stdout); // Forzar el vaciado del búfer
+                                                    fflush(stdout);
                                                     return;
                                                     break;
                                                 case 0:
@@ -336,7 +328,7 @@ void manejador(int sig) {
     if (sig == SIGTERM) {
         if(pidYo == pidPrincipal) {
             fprintf(stdout, "Comienzo de la propagacion de la señal...\n");
-            fflush(stdout); // Forzar el vaciado del búfer
+            fflush(stdout);
             return;
         }
         if (pidYo == leer_pid(0)) { // Proceso 51
