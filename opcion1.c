@@ -142,21 +142,18 @@ void crea_jerarquia() {
                                                                                     fprintf(stdout, "Soy el proceso 58(pid=%d)\n", pidYo);
                                                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                                                     pause();
-                                                                                    exit(0);
                                                                             }
                                                                             pidHijo[1] = -1;
                                                                             pidYo=getpid();
                                                                             fprintf(stdout, "Soy el proceso 57(pid=%d)\n", pidYo);
                                                                             fflush(stdout); // Forzar el vaciado del búfer
                                                                             pause();
-                                                                            exit(0);
                                                                             break;
                                                                     }
                                                                     pidHijo[1] = -1;
                                                                     fprintf(stdout, "Soy el proceso 56(pid=%d)\n", pidYo);
                                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                                     pause();
-                                                                    exit(0);
                                                                     break;
                                                             }
                                                             pidHijo[0] = -1;
@@ -164,7 +161,6 @@ void crea_jerarquia() {
                                                             fprintf(stdout, "Soy el proceso 54(pid=%d)\n", pidYo);
                                                             fflush(stdout); // Forzar el vaciado del búfer
                                                             pause();
-                                                            exit(0);
                                                             break;
                                                     }
                                                     pidHijo[0] = -1;
@@ -173,7 +169,6 @@ void crea_jerarquia() {
                                                     fprintf(stdout, "Soy el proceso 50(pid=%d)\n", pidYo);
                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                     pause();
-                                                    exit(0);
                                                     break;
                                             }
                                             pidHijo[1] = -1;
@@ -181,7 +176,6 @@ void crea_jerarquia() {
                                             fprintf(stdout, "Soy el proceso 46(pid=%d)\n", pidYo);
                                             fflush(stdout); // Forzar el vaciado del búfer
                                             pause();
-                                            exit(0);
                                             break;
                                     }
                                     pidHijo[1] = -1;
@@ -189,7 +183,6 @@ void crea_jerarquia() {
                                     fprintf(stdout, "Soy el proceso 42(pid=%d)\n", pidYo);
                                     fflush(stdout); // Forzar el vaciado del búfer
                                     pause();
-                                    exit(0);
                                     break;
                             }
                             switch (pidHijo[1] = fork()) { // Proceso 43
@@ -220,7 +213,6 @@ void crea_jerarquia() {
                                                     fprintf(stdout, "Soy el proceso 51(pid=%d)\n", pidYo);
                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                     pause();
-                                                    exit(0);
                                                     break;
                                             }
                                             pidHijo[1] = -1;
@@ -228,7 +220,6 @@ void crea_jerarquia() {
                                             fprintf(stdout, "Soy el proceso 47(pid=%d)\n", pidYo);
                                             fflush(stdout); // Forzar el vaciado del búfer
                                             pause();
-                                            exit(0);
                                             break;
                                     }
                                     pidHijo[1] = -1;
@@ -236,14 +227,12 @@ void crea_jerarquia() {
                                     fprintf(stdout, "Soy el proceso 43(pid=%d)\n", pidYo);
                                     fflush(stdout); // Forzar el vaciado del búfer
                                     pause();
-                                    exit(0);
                                     break;
                             }
                             pidYo=getpid();
                             fprintf(stdout, "Soy el proceso 40(pid=%d)\n", pidYo);
                             fflush(stdout); // Forzar el vaciado del búfer
                             pause();
-                            exit(0);
                             break;
                     }
                     switch (pidHijo[1] = fork()) { // Proceso 41
@@ -289,7 +278,6 @@ void crea_jerarquia() {
                                                             fprintf(stdout, "Soy el proceso 55(pid=%d)\n", pidYo);
                                                             fflush(stdout); // Forzar el vaciado del búfer
                                                             pause();
-                                                            exit(0);
                                                             break;
                                                     }
                                                     pidHijo[0] = -1;
@@ -298,7 +286,6 @@ void crea_jerarquia() {
                                                     fprintf(stdout, "Soy el proceso 52(pid=%d)\n", pidYo);
                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                     pause();
-                                                    exit(0);
                                                     break;
                                             }
                                             pidHijo[1] = -1;
@@ -306,7 +293,6 @@ void crea_jerarquia() {
                                             fprintf(stdout, "Soy el proceso 48(pid=%d)\n", pidYo);
                                             fflush(stdout); // Forzar el vaciado del búfer
                                             pause();
-                                            exit(0);
                                             break;
                                     }
                                     pidHijo[1] = -1;
@@ -314,7 +300,6 @@ void crea_jerarquia() {
                                     fprintf(stdout, "Soy el proceso 44(pid=%d)\n", pidYo);
                                     fflush(stdout); // Forzar el vaciado del búfer
                                     pause();
-                                    exit(0);
                                     break;
                             }
                             switch (pidHijo[1] = fork()) { // Proceso 45
@@ -345,7 +330,6 @@ void crea_jerarquia() {
                                                     fprintf(stdout, "Soy el proceso 53(pid=%d)\n", pidYo);
                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                     pause();
-                                                    exit(0);
                                                     break;
                                             }
                                             pidHijo[1] = -1;
@@ -353,7 +337,6 @@ void crea_jerarquia() {
                                             fprintf(stdout, "Soy el proceso 49(pid=%d)\n", pidYo);
                                             fflush(stdout); // Forzar el vaciado del búfer
                                             pause();
-                                            exit(0);
                                             break;
                                     }
                                     pidHijo[1] = -1;
@@ -361,21 +344,18 @@ void crea_jerarquia() {
                                     fprintf(stdout, "Soy el proceso 45(pid=%d)\n", pidYo);
                                     fflush(stdout); // Forzar el vaciado del búfer
                                     pause();
-                                    exit(0);
                                     break;
                             }
                             pidYo=getpid();
                             fprintf(stdout, "Soy el proceso 41(pid=%d)\n", pidYo);
                             fflush(stdout); // Forzar el vaciado del búfer
                             pause();
-                            exit(0);
                             break;
                     }
                     pidYo=getpid();
                     fprintf(stdout, "Soy el proceso 39(pid=%d)\n", pidYo);
                     fflush(stdout); // Forzar el vaciado del búfer
                     pause();
-                    exit(0);
                     break;
             }
             pidHijo[1] = -1;
@@ -383,7 +363,6 @@ void crea_jerarquia() {
             fprintf(stdout, "Soy el proceso 38(pid=%d)\n", pidYo);
             fflush(stdout); // Forzar el vaciado del búfer
             pause();
-            exit(0);
             break;
         default:
             pidHijo[1] = -1;
