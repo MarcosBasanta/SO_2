@@ -1,6 +1,5 @@
 // Instrucciones de uso en el README.md
 // Falta limpiar el codigo, salidas de comprobacion, printf, etc
-// Podriamos incluir un struct para almacenar los datos de los procesos
 // Añadir interfaz de usuario minima para dar informacion y feedback
 // Sincronizar la escritura de los PIDs en el archivo (Opcional)
 // Sincronizar la lectura de los PIDs en el archivo (Opcional)
@@ -54,17 +53,11 @@ int main() {
     pause();
 
     pidYo = getpid();
-    if (pidYo == leer_pid(58)) {
-        fprintf(stdout, "Soy el ultimo proceso (pid=%d)\n", pidYo);
-        waitpid(leer_pid(50), NULL, 0);
-        waitpid(leer_pid(52), NULL, 0);
-        waitpid(leer_pid(54), NULL, 0);
-        waitpid(leer_pid(57), NULL, 0);
-
-        exit(0);
-    }
-
     if(pidYo == pidPrincipal) {
+        kill(leer_pid(37), SIGTERM);
+
+        pause();
+
         waitpid(leer_pid(58), NULL, 0);
         desproyectar_archivo(file);
     }
@@ -174,56 +167,40 @@ void crea_jerarquia() {
                                                                                         case 0:
                                                                                             pidYo=getpid();
                                                                                             escribir_pid(58, pidYo);
-                                                                
-                                                                                            
-                                                                                            pidYo=getpid();
                                                                                             fprintf(stdout, "Soy el proceso 58(pid=%d)\n", pidYo);
                                                                                             fflush(stdout); // Forzar el vaciado del búfer
                                                                                             pause();
-                                                                                            exit(0);
+                                                                                            break;
                                                                                     }
-                                                                                    
                                                                                     fprintf(stdout, "Soy el proceso 57(pid=%d)\n", pidYo);
                                                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                                                     pause();
-                                                                                    exit(0);
                                                                                     break;
                                                                             }
                                                                             
                                                                             fprintf(stdout, "Soy el proceso 56(pid=%d)\n", pidYo);
                                                                             fflush(stdout); // Forzar el vaciado del búfer
                                                                             pause();
-                                                                            exit(0);
                                                                             break;
                                                                     }
-                                        
-                                                                    
                                                                     fprintf(stdout, "Soy el proceso 54(pid=%d)\n", pidYo);
                                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                                     pause();
-                                                                    exit(0);
                                                                     break;
                                                             }
-                                
-                                                            
                                                             fprintf(stdout, "Soy el proceso 50(pid=%d)\n", pidYo);
                                                             fflush(stdout); // Forzar el vaciado del búfer
                                                             pause();
-                                                            exit(0);
                                                             break;
                                                     }
-                                                    
                                                     fprintf(stdout, "Soy el proceso 46(pid=%d)\n", pidYo);
                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                     pause();
-                                                    exit(0);
                                                     break;
                                             }
-                                            
                                             fprintf(stdout, "Soy el proceso 42(pid=%d)\n", pidYo);
                                             fflush(stdout); // Forzar el vaciado del búfer
                                             pause();
-                                            exit(0);
                                             break;
                                     }
                                     switch (fork()) { // Proceso 43
@@ -253,32 +230,25 @@ void crea_jerarquia() {
                                                         case 0:
                                                             pidYo=getpid();
                                                             escribir_pid(51, pidYo);
-                                
-                                                            
                                                             fprintf(stdout, "Soy el proceso 51(pid=%d)\n", pidYo);
                                                             fflush(stdout); // Forzar el vaciado del búfer
                                                             pause();
                                                             exit(0);
                                                             break;
                                                     }
-                                                    
                                                     fprintf(stdout, "Soy el proceso 47(pid=%d)\n", pidYo);
                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                     pause();
-                                                    exit(0);
                                                     break;
                                             }
-                                            
                                             fprintf(stdout, "Soy el proceso 43(pid=%d)\n", pidYo);
                                             fflush(stdout); // Forzar el vaciado del búfer
                                             pause();
-                                            exit(0);
                                             break;
                                     }
                                     fprintf(stdout, "Soy el proceso 40(pid=%d)\n", pidYo);
                                     fflush(stdout); // Forzar el vaciado del búfer
                                     pause();
-                                    exit(0);
                                     break;
                             }
                             switch (fork()) { // Proceso 41
@@ -326,34 +296,24 @@ void crea_jerarquia() {
                                                                 case 0:
                                                                     pidYo=getpid();
                                                                     escribir_pid(55, pidYo);
-                                        
-                                                                    
                                                                     fprintf(stdout, "Soy el proceso 55(pid=%d)\n", pidYo);
                                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                                     pause();
-                                                                    exit(0);
                                                                     break;
                                                             }
-                                
-                                                            
                                                             fprintf(stdout, "Soy el proceso 52(pid=%d)\n", pidYo);
                                                             fflush(stdout); // Forzar el vaciado del búfer
                                                             pause();
-                                                            exit(0);
                                                             break;
                                                     }
-                                                    
                                                     fprintf(stdout, "Soy el proceso 48(pid=%d)\n", pidYo);
                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                     pause();
-                                                    exit(0);
                                                     break;
                                             }
-                                            
                                             fprintf(stdout, "Soy el proceso 44(pid=%d)\n", pidYo);
                                             fflush(stdout); // Forzar el vaciado del búfer
                                             pause();
-                                            exit(0);
                                             break;
                                     }
                                     switch (fork()) { // Proceso 45
@@ -386,37 +346,31 @@ void crea_jerarquia() {
                                                             fprintf(stdout, "Soy el proceso 53(pid=%d)\n", pidYo);
                                                             fflush(stdout); // Forzar el vaciado del búfer
                                                             pause();
-                                                            exit(0);
                                                             break;
                                                     }
                                                     fprintf(stdout, "Soy el proceso 49(pid=%d)\n", pidYo);
                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                     pause();
-                                                    exit(0);
                                                     break;
                                             }
                                             fprintf(stdout, "Soy el proceso 45(pid=%d)\n", pidYo);
                                             fflush(stdout); // Forzar el vaciado del búfer
                                             pause();
-                                            exit(0);
                                             break;
                                     }
                                     fprintf(stdout, "Soy el proceso 41(pid=%d)\n", pidYo);
                                     fflush(stdout); // Forzar el vaciado del búfer
                                     pause();
-                                    exit(0);
                                     break;
                             }
                             fprintf(stdout, "Soy el proceso 39(pid=%d)\n", pidYo);
                             fflush(stdout); // Forzar el vaciado del búfer
                             pause();
-                            exit(0);
                             break;
                     }
                     fprintf(stdout, "Soy el proceso 38(pid=%d)\n", pidYo);
                     fflush(stdout); // Forzar el vaciado del búfer
                     pause();
-                    exit(0);
                     break;
             }
             fprintf(stdout, "Soy el proceso 37(pid=%d)\n", pidYo);
@@ -438,6 +392,12 @@ void configurar_manejador() {
     if (sigaction(SIGTERM, &sa, NULL) == -1) {
         fprintf(stderr, "Error al establecer el manejador de señales");
         fflush(stdout);
+        exit(EXIT_FAILURE);
+    }
+
+    // Establecer el manejador de señales para SIGUSR1
+    if (sigaction(SIGUSR1, &sa, NULL) == -1) {
+        perror("Error al establecer el manejador de señales SIGUSR1");
         exit(EXIT_FAILURE);
     }
 }
@@ -590,15 +550,30 @@ void manejador(int sig) {
                 waitpid(pidPadre, NULL, 0);
                 break;
             case 58:
-                return;
-                break;
+                fprintf(stdout, "Soy el ultimo proceso (pid=%d)\n", pidYo);
+                waitpid(leer_pid(50), NULL, 0);
+                waitpid(leer_pid(52), NULL, 0);
+                waitpid(leer_pid(54), NULL, 0);
+                waitpid(leer_pid(57), NULL, 0);
 
+
+                fprintf(stdout, "Soy el proceso %d y envio mi señal a %d\n", pidYo, pidPrincipal);
+                fflush(stdout); // Forzar el vaciado del búfer
+                kill(pidPrincipal, SIGUSR1);
+                break;
             default:
                 fprintf(stderr, "Error: Proceso %d no encontrado\n", numProceso);
                 fflush(stdout);
                 break;
         }
         exit(0);
+    } if (sig == SIGUSR1) {
+        if (pidYo == pidPrincipal) {
+            return;
+        } else {
+            fprintf(stderr, "Error: Señal no permitida para este proceso\n");
+            fflush(stdout);
+        }
     } else {
         fprintf(stderr, "Error: Señal no reconocida\n");
         fflush(stdout);
