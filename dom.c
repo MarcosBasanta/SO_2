@@ -57,7 +57,7 @@ int main() {
 
         desproyectar_archivo(file);
 
-        exit(0);
+        // exit(0);
     }
 
     return 0;
