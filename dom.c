@@ -54,6 +54,8 @@ int main() {
         kill(pidHijo[0], SIGTERM);
 
         waitpid(pidHijo[0], NULL, 0);
+        fprintf(stdout, "Eliminacion de todo el arbol completada exitosamente\n");
+        fflush(stdout); // Forzar el vaciado del búfer
 
         desproyectar_archivo(file);
     }
@@ -331,7 +333,6 @@ void configurar_manejador() {
 void manejador(int sig) {
     pid_t pidYo;
     pidYo = getpid();
-    fprintf(stdout, "Proceso %d recibió la señal %d\n", pidYo, sig);
     if (sig == SIGTERM) {
         if(pidYo == pidPrincipal) {
             fprintf(stdout, "Comienzo de la propagacion de la señal...\n");
