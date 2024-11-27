@@ -1,8 +1,10 @@
 # Ignore binary file
+dom
 opcion1
 opcion2
 
 # Ignore object file
+dom.o
 opcion1.o
 opcion2.o
 
