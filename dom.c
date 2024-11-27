@@ -56,8 +56,6 @@ int main() {
         waitpid(pidHijo[0], NULL, 0);
 
         desproyectar_archivo(file);
-
-        // exit(0);
     }
 
     return 0;
