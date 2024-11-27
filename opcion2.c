@@ -20,16 +20,17 @@
 #define PID_FILE "pids.dat"
 #define NUM_PROCESOS 22
 #define PROCESO_INICIO 37
+#define PID_SIZE (sizeof(proceso) * NUM_PROCESOS)
+#define FILE_SIZE (PID_SIZE * NUM_PROCESOS)
 
 typedef struct {
     int numero;
     pid_t pid;
 } proceso;
 
-const PID_SIZE = sizeof(proceso) * NUM_PROCESOS;
-const FILE_SIZE = PID_SIZE * NUM_PROCESOS;
 
 proceso *pids;
+pid_t pidPrincipal;
 
 void crea_jerarquia();
 void configurar_manejador();
@@ -43,11 +44,11 @@ void desproyectar_archivo(int file);
 int main() {
     int i, file;
     pid_t pidYo;
+    pidPrincipal = getpid();
 
     proyectar_archivo(file);
     configurar_manejador();
 
-    escribir_pid(37, getpid());
     crea_jerarquia();
 
     pause();
@@ -60,9 +61,12 @@ int main() {
         waitpid(leer_pid(54), NULL, 0);
         waitpid(leer_pid(57), NULL, 0);
 
-        desproyectar_archivo(file);
-
         exit(0);
+    }
+
+    if(pidYo == pidPrincipal) {
+        waitpid(leer_pid(58), NULL, 0);
+        desproyectar_archivo(file);
     }
 
     return 0;
@@ -70,113 +74,131 @@ int main() {
 
 void crea_jerarquia() {
     pid_t pidYo;
-    switch(fork()) { // Proceso 38
+    switch (fork()) { // Proceso 37
         case -1:
             fprintf(stderr, "main:proceso38:fork");
-            fflush(stdout); // Forzar el vaciado del búfer
-            return;
+                fflush(stdout); // Forzar el vaciado del búfer
+                return;
+                break;
             break;
         case 0:
             pidYo=getpid();
-            escribir_pid(38, pidYo);
-            switch (fork()) { // Proceso 39
+            escribir_pid(37, pidYo);
+            switch(fork()) { // Proceso 38
                 case -1:
-                    fprintf(stderr, "main:proceso39:fork");
+                    fprintf(stderr, "main:proceso38:fork");
                     fflush(stdout); // Forzar el vaciado del búfer
                     return;
                     break;
                 case 0:
                     pidYo=getpid();
-                    escribir_pid(39, pidYo);
-                    switch(fork()) { // Proceso 40
+                    escribir_pid(38, pidYo);
+                    switch (fork()) { // Proceso 39
                         case -1:
-                            fprintf(stderr, "main:proceso40:fork");
+                            fprintf(stderr, "main:proceso39:fork");
                             fflush(stdout); // Forzar el vaciado del búfer
                             return;
                             break;
                         case 0:
                             pidYo=getpid();
-                            escribir_pid(40, pidYo);
-                            switch (fork()) { // Proceso 42
+                            escribir_pid(39, pidYo);
+                            switch(fork()) { // Proceso 40
                                 case -1:
-                                    fprintf(stderr, "main:proceso42:fork");
+                                    fprintf(stderr, "main:proceso40:fork");
                                     fflush(stdout); // Forzar el vaciado del búfer
                                     return;
                                     break;
                                 case 0:
                                     pidYo=getpid();
-                                    escribir_pid(42, pidYo);
-                                    switch (fork()) { // Proceso 46
+                                    escribir_pid(40, pidYo);
+                                    switch (fork()) { // Proceso 42
                                         case -1:
-                                            fprintf(stderr, "main:proceso46:fork");
+                                            fprintf(stderr, "main:proceso42:fork");
                                             fflush(stdout); // Forzar el vaciado del búfer
                                             return;
                                             break;
                                         case 0:
                                             pidYo=getpid();
-                                            escribir_pid(46, pidYo);
-                                            switch (fork()) { // Proceso 50
+                                            escribir_pid(42, pidYo);
+                                            switch (fork()) { // Proceso 46
                                                 case -1:
-                                                    fprintf(stderr, "main:proceso50:fork");
+                                                    fprintf(stderr, "main:proceso46:fork");
                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                     return;
                                                     break;
                                                 case 0:
                                                     pidYo=getpid();
-                                                    escribir_pid(50, pidYo);
-                                                    switch (fork()) { // Proceso 54
+                                                    escribir_pid(46, pidYo);
+                                                    switch (fork()) { // Proceso 50
                                                         case -1:
-                                                            fprintf(stderr, "main:proceso54:fork");
+                                                            fprintf(stderr, "main:proceso50:fork");
                                                             fflush(stdout); // Forzar el vaciado del búfer
                                                             return;
                                                             break;
                                                         case 0:
                                                             pidYo=getpid();
-                                                            escribir_pid(54, pidYo);
-                                                            switch (fork()) { // Proceso 56
+                                                            escribir_pid(50, pidYo);
+                                                            switch (fork()) { // Proceso 54
                                                                 case -1:
-                                                                    fprintf(stderr, "main:proceso56:fork");
+                                                                    fprintf(stderr, "main:proceso54:fork");
                                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                                     return;
                                                                     break;
                                                                 case 0:
                                                                     pidYo=getpid();
-                                                                    escribir_pid(56, pidYo);
-                                                                    switch (fork()) { // Proceso 57
+                                                                    escribir_pid(54, pidYo);
+                                                                    switch (fork()) { // Proceso 56
                                                                         case -1:
-                                                                            fprintf(stderr, "main:proceso57:fork");
+                                                                            fprintf(stderr, "main:proceso56:fork");
                                                                             fflush(stdout); // Forzar el vaciado del búfer
                                                                             return;
                                                                             break;
                                                                         case 0:
                                                                             pidYo=getpid();
-                                                                            escribir_pid(57, pidYo);
-                                                                            switch (fork()) { // Proceso 58
+                                                                            escribir_pid(56, pidYo);
+                                                                            switch (fork()) { // Proceso 57
                                                                                 case -1:
-                                                                                    fprintf(stderr, "main:proceso58:fork");
+                                                                                    fprintf(stderr, "main:proceso57:fork");
                                                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                                                     return;
                                                                                     break;
                                                                                 case 0:
                                                                                     pidYo=getpid();
-                                                                                    escribir_pid(58, pidYo);
-                                                        
+                                                                                    escribir_pid(57, pidYo);
+                                                                                    switch (fork()) { // Proceso 58
+                                                                                        case -1:
+                                                                                            fprintf(stderr, "main:proceso58:fork");
+                                                                                            fflush(stdout); // Forzar el vaciado del búfer
+                                                                                            return;
+                                                                                            break;
+                                                                                        case 0:
+                                                                                            pidYo=getpid();
+                                                                                            escribir_pid(58, pidYo);
+                                                                
+                                                                                            
+                                                                                            pidYo=getpid();
+                                                                                            fprintf(stdout, "Soy el proceso 58(pid=%d)\n", pidYo);
+                                                                                            fflush(stdout); // Forzar el vaciado del búfer
+                                                                                            pause();
+                                                                                            exit(0);
+                                                                                    }
                                                                                     
-                                                                                    pidYo=getpid();
-                                                                                    fprintf(stdout, "Soy el proceso 58(pid=%d)\n", pidYo);
+                                                                                    fprintf(stdout, "Soy el proceso 57(pid=%d)\n", pidYo);
                                                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                                                     pause();
                                                                                     exit(0);
+                                                                                    break;
                                                                             }
                                                                             
-                                                                            fprintf(stdout, "Soy el proceso 57(pid=%d)\n", pidYo);
+                                                                            fprintf(stdout, "Soy el proceso 56(pid=%d)\n", pidYo);
                                                                             fflush(stdout); // Forzar el vaciado del búfer
                                                                             pause();
                                                                             exit(0);
                                                                             break;
                                                                     }
+                                        
                                                                     
-                                                                    fprintf(stdout, "Soy el proceso 56(pid=%d)\n", pidYo);
+                                                                    fprintf(stdout, "Soy el proceso 54(pid=%d)\n", pidYo);
                                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                                     pause();
                                                                     exit(0);
@@ -184,237 +206,226 @@ void crea_jerarquia() {
                                                             }
                                 
                                                             
-                                                            fprintf(stdout, "Soy el proceso 54(pid=%d)\n", pidYo);
+                                                            fprintf(stdout, "Soy el proceso 50(pid=%d)\n", pidYo);
                                                             fflush(stdout); // Forzar el vaciado del búfer
                                                             pause();
                                                             exit(0);
                                                             break;
                                                     }
-                        
                                                     
-                                                    fprintf(stdout, "Soy el proceso 50(pid=%d)\n", pidYo);
+                                                    fprintf(stdout, "Soy el proceso 46(pid=%d)\n", pidYo);
                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                     pause();
                                                     exit(0);
                                                     break;
                                             }
                                             
-                                            fprintf(stdout, "Soy el proceso 46(pid=%d)\n", pidYo);
+                                            fprintf(stdout, "Soy el proceso 42(pid=%d)\n", pidYo);
                                             fflush(stdout); // Forzar el vaciado del búfer
                                             pause();
                                             exit(0);
                                             break;
                                     }
-                                    
-                                    fprintf(stdout, "Soy el proceso 42(pid=%d)\n", pidYo);
-                                    fflush(stdout); // Forzar el vaciado del búfer
-                                    pause();
-                                    exit(0);
-                                    break;
-                            }
-                            switch (fork()) { // Proceso 43
-                                case -1:
-                                    fprintf(stderr, "main:proceso43:fork");
-                                    fflush(stdout); // Forzar el vaciado del búfer
-                                    return;
-                                    break;
-                                case 0:
-                                    pidYo=getpid();
-                                    escribir_pid(43, pidYo);
-                                    switch (fork()) { // Proceso 47
+                                    switch (fork()) { // Proceso 43
                                         case -1:
-                                            fprintf(stderr, "main:proceso47:fork");
+                                            fprintf(stderr, "main:proceso43:fork");
                                             fflush(stdout); // Forzar el vaciado del búfer
                                             return;
                                             break;
                                         case 0:
                                             pidYo=getpid();
-                                            escribir_pid(47, pidYo);
-                                            switch (fork()) { // Proceso 51
+                                            escribir_pid(43, pidYo);
+                                            switch (fork()) { // Proceso 47
                                                 case -1:
-                                                    fprintf(stderr, "main:proceso51:fork");
+                                                    fprintf(stderr, "main:proceso47:fork");
                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                     return;
                                                     break;
                                                 case 0:
                                                     pidYo=getpid();
-                                                    escribir_pid(51, pidYo);
-                        
-                                                    
-                                                    fprintf(stdout, "Soy el proceso 51(pid=%d)\n", pidYo);
-                                                    fflush(stdout); // Forzar el vaciado del búfer
-                                                    pause();
-                                                    exit(0);
-                                                    break;
-                                            }
-                                            
-                                            fprintf(stdout, "Soy el proceso 47(pid=%d)\n", pidYo);
-                                            fflush(stdout); // Forzar el vaciado del búfer
-                                            pause();
-                                            exit(0);
-                                            break;
-                                    }
-                                    
-                                    fprintf(stdout, "Soy el proceso 43(pid=%d)\n", pidYo);
-                                    fflush(stdout); // Forzar el vaciado del búfer
-                                    pause();
-                                    exit(0);
-                                    break;
-                            }
-                            fprintf(stdout, "Soy el proceso 40(pid=%d)\n", pidYo);
-                            fflush(stdout); // Forzar el vaciado del búfer
-                            pause();
-                            exit(0);
-                            break;
-                    }
-                    switch (fork()) { // Proceso 41
-                        case -1:
-                            fprintf(stderr, "main:proceso41:fork");
-                            fflush(stdout); // Forzar el vaciado del búfer
-                            return;
-                            break;
-                        case 0:
-                            pidYo=getpid();
-                            escribir_pid(41, pidYo);
-                            switch (fork()) { // Proceso 44
-                                case -1:
-                                    fprintf(stderr, "main:proceso44:fork");
-                                    fflush(stdout); // Forzar el vaciado del búfer
-                                    return;
-                                    break;
-                                case 0:
-                                    pidYo=getpid();
-                                    escribir_pid(44, pidYo);
-                                    switch (fork()) { // Proceso 48
-                                        case -1:
-                                            fprintf(stderr, "main:proceso48:fork");
-                                            fflush(stdout); // Forzar el vaciado del búfer
-                                            return;
-                                            break;
-                                        case 0:
-                                            pidYo=getpid();
-                                            escribir_pid(48, pidYo);
-                                            switch (fork()) { // Proceso 52
-                                                case -1:
-                                                    fprintf(stderr, "main:proceso52:fork");
-                                                    fflush(stdout); // Forzar el vaciado del búfer
-                                                    return;
-                                                    break;
-                                                case 0:
-                                                    pidYo=getpid();
-                                                    escribir_pid(52, pidYo);
-                                                    switch (fork()) { // Proceso 55
+                                                    escribir_pid(47, pidYo);
+                                                    switch (fork()) { // Proceso 51
                                                         case -1:
-                                                            fprintf(stderr, "main:proceso55:fork");
+                                                            fprintf(stderr, "main:proceso51:fork");
                                                             fflush(stdout); // Forzar el vaciado del búfer
                                                             return;
                                                             break;
                                                         case 0:
                                                             pidYo=getpid();
-                                                            escribir_pid(55, pidYo);
+                                                            escribir_pid(51, pidYo);
                                 
                                                             
-                                                            fprintf(stdout, "Soy el proceso 55(pid=%d)\n", pidYo);
+                                                            fprintf(stdout, "Soy el proceso 51(pid=%d)\n", pidYo);
                                                             fflush(stdout); // Forzar el vaciado del búfer
                                                             pause();
                                                             exit(0);
                                                             break;
                                                     }
-                        
                                                     
-                                                    fprintf(stdout, "Soy el proceso 52(pid=%d)\n", pidYo);
+                                                    fprintf(stdout, "Soy el proceso 47(pid=%d)\n", pidYo);
                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                     pause();
                                                     exit(0);
                                                     break;
                                             }
                                             
-                                            fprintf(stdout, "Soy el proceso 48(pid=%d)\n", pidYo);
+                                            fprintf(stdout, "Soy el proceso 43(pid=%d)\n", pidYo);
                                             fflush(stdout); // Forzar el vaciado del búfer
                                             pause();
                                             exit(0);
                                             break;
                                     }
-                                    
-                                    fprintf(stdout, "Soy el proceso 44(pid=%d)\n", pidYo);
+                                    fprintf(stdout, "Soy el proceso 40(pid=%d)\n", pidYo);
                                     fflush(stdout); // Forzar el vaciado del búfer
                                     pause();
                                     exit(0);
                                     break;
                             }
-                            switch (fork()) { // Proceso 45
+                            switch (fork()) { // Proceso 41
                                 case -1:
-                                    fprintf(stderr, "main:proceso45:fork");
+                                    fprintf(stderr, "main:proceso41:fork");
                                     fflush(stdout); // Forzar el vaciado del búfer
                                     return;
                                     break;
                                 case 0:
                                     pidYo=getpid();
-                                    escribir_pid(45, pidYo);
-                                    switch (fork()) { // Proceso 49
+                                    escribir_pid(41, pidYo);
+                                    switch (fork()) { // Proceso 44
                                         case -1:
-                                            fprintf(stderr, "main:proceso49:fork");
+                                            fprintf(stderr, "main:proceso44:fork");
                                             fflush(stdout); // Forzar el vaciado del búfer
                                             return;
                                             break;
                                         case 0:
                                             pidYo=getpid();
-                                            escribir_pid(49, pidYo);
-                                            switch (fork()) { // Proceso 53
+                                            escribir_pid(44, pidYo);
+                                            switch (fork()) { // Proceso 48
                                                 case -1:
-                                                    fprintf(stderr, "main:proceso53:fork");
+                                                    fprintf(stderr, "main:proceso48:fork");
                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                     return;
                                                     break;
                                                 case 0:
                                                     pidYo=getpid();
-                                                    escribir_pid(53, pidYo);
-                        
+                                                    escribir_pid(48, pidYo);
+                                                    switch (fork()) { // Proceso 52
+                                                        case -1:
+                                                            fprintf(stderr, "main:proceso52:fork");
+                                                            fflush(stdout); // Forzar el vaciado del búfer
+                                                            return;
+                                                            break;
+                                                        case 0:
+                                                            pidYo=getpid();
+                                                            escribir_pid(52, pidYo);
+                                                            switch (fork()) { // Proceso 55
+                                                                case -1:
+                                                                    fprintf(stderr, "main:proceso55:fork");
+                                                                    fflush(stdout); // Forzar el vaciado del búfer
+                                                                    return;
+                                                                    break;
+                                                                case 0:
+                                                                    pidYo=getpid();
+                                                                    escribir_pid(55, pidYo);
+                                        
+                                                                    
+                                                                    fprintf(stdout, "Soy el proceso 55(pid=%d)\n", pidYo);
+                                                                    fflush(stdout); // Forzar el vaciado del búfer
+                                                                    pause();
+                                                                    exit(0);
+                                                                    break;
+                                                            }
+                                
+                                                            
+                                                            fprintf(stdout, "Soy el proceso 52(pid=%d)\n", pidYo);
+                                                            fflush(stdout); // Forzar el vaciado del búfer
+                                                            pause();
+                                                            exit(0);
+                                                            break;
+                                                    }
                                                     
-                                                    fprintf(stdout, "Soy el proceso 53(pid=%d)\n", pidYo);
+                                                    fprintf(stdout, "Soy el proceso 48(pid=%d)\n", pidYo);
                                                     fflush(stdout); // Forzar el vaciado del búfer
                                                     pause();
                                                     exit(0);
                                                     break;
                                             }
                                             
-                                            fprintf(stdout, "Soy el proceso 49(pid=%d)\n", pidYo);
+                                            fprintf(stdout, "Soy el proceso 44(pid=%d)\n", pidYo);
                                             fflush(stdout); // Forzar el vaciado del búfer
                                             pause();
                                             exit(0);
                                             break;
                                     }
-                                    
-                                    fprintf(stdout, "Soy el proceso 45(pid=%d)\n", pidYo);
+                                    switch (fork()) { // Proceso 45
+                                        case -1:
+                                            fprintf(stderr, "main:proceso45:fork");
+                                            fflush(stdout); // Forzar el vaciado del búfer
+                                            return;
+                                            break;
+                                        case 0:
+                                            pidYo=getpid();
+                                            escribir_pid(45, pidYo);
+                                            switch (fork()) { // Proceso 49
+                                                case -1:
+                                                    fprintf(stderr, "main:proceso49:fork");
+                                                    fflush(stdout); // Forzar el vaciado del búfer
+                                                    return;
+                                                    break;
+                                                case 0:
+                                                    pidYo=getpid();
+                                                    escribir_pid(49, pidYo);
+                                                    switch (fork()) { // Proceso 53
+                                                        case -1:
+                                                            fprintf(stderr, "main:proceso53:fork");
+                                                            fflush(stdout); // Forzar el vaciado del búfer
+                                                            return;
+                                                            break;
+                                                        case 0:
+                                                            pidYo=getpid();
+                                                            escribir_pid(53, pidYo);
+                                                            fprintf(stdout, "Soy el proceso 53(pid=%d)\n", pidYo);
+                                                            fflush(stdout); // Forzar el vaciado del búfer
+                                                            pause();
+                                                            exit(0);
+                                                            break;
+                                                    }
+                                                    fprintf(stdout, "Soy el proceso 49(pid=%d)\n", pidYo);
+                                                    fflush(stdout); // Forzar el vaciado del búfer
+                                                    pause();
+                                                    exit(0);
+                                                    break;
+                                            }
+                                            fprintf(stdout, "Soy el proceso 45(pid=%d)\n", pidYo);
+                                            fflush(stdout); // Forzar el vaciado del búfer
+                                            pause();
+                                            exit(0);
+                                            break;
+                                    }
+                                    fprintf(stdout, "Soy el proceso 41(pid=%d)\n", pidYo);
                                     fflush(stdout); // Forzar el vaciado del búfer
                                     pause();
                                     exit(0);
                                     break;
                             }
-                            fprintf(stdout, "Soy el proceso 41(pid=%d)\n", pidYo);
+                            fprintf(stdout, "Soy el proceso 39(pid=%d)\n", pidYo);
                             fflush(stdout); // Forzar el vaciado del búfer
                             pause();
                             exit(0);
                             break;
                     }
-                    fprintf(stdout, "Soy el proceso 39(pid=%d)\n", pidYo);
+                    fprintf(stdout, "Soy el proceso 38(pid=%d)\n", pidYo);
                     fflush(stdout); // Forzar el vaciado del búfer
                     pause();
                     exit(0);
                     break;
             }
-            
-            fprintf(stdout, "Soy el proceso 38(pid=%d)\n", pidYo);
-            fflush(stdout); // Forzar el vaciado del búfer
-            pause();
-            exit(0);
-            break;
-        default:
-            
             fprintf(stdout, "Soy el proceso 37(pid=%d)\n", pidYo);
             fflush(stdout); // Forzar el vaciado del búfer
             break;
+        default:
+            break;
     }
+    return;
 }
 
 void configurar_manejador() {
@@ -439,7 +450,9 @@ void manejador(int sig) {
     numProceso = obtenerNum(pidYo);
     fprintf(stdout, "Proceso %d recibió la señal %d\n", pidYo, sig);
     if (sig == SIGTERM) {
-
+        if (pidYo == pidPrincipal) {
+            return;
+        }
         switch (numProceso) {
             case 37:
                 pidHijo[0] = leer_pid(numProceso+1);
@@ -586,6 +599,9 @@ void manejador(int sig) {
                 break;
         }
         exit(0);
+    } else {
+        fprintf(stderr, "Error: Señal no reconocida\n");
+        fflush(stdout);
     }
 }
 
